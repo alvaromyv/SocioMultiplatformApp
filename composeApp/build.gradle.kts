@@ -47,7 +47,10 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+
+            implementation(project.dependencies.platform(libs.firebase.bom))
         }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -57,7 +60,9 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            ////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////// MIS DEPENDENCIAS /////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////
             implementation(libs.jetbrains.navigation.compose)
 
             implementation(compose.material3AdaptiveNavigationSuite)
@@ -67,7 +72,12 @@ kotlin {
 
             implementation(compose.materialIconsExtended)
 
-            implementation(libs.firebase.firestore)
+            ////////////////////////////////////////////////////////////////////////////////////////
+            implementation(libs.gitlive.firebase.common)
+            implementation(libs.gitlive.firebase.firestore)
+
+            ////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////
         }
         commonTest.dependencies {
