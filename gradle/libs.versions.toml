@@ -1,6 +1,6 @@
 [versions]
 adaptive = "1.1.1"
-agp = "8.7.3"
+agp = "8.9.3"
 android-compileSdk = "35"
 android-minSdk = "24"
 android-targetSdk = "35"
@@ -12,17 +12,23 @@ androidx-espresso = "3.6.1"
 androidx-lifecycle = "2.9.0"
 androidx-testExt = "1.2.1"
 composeMultiplatform = "1.8.1"
+deJensklingenbergKtorfitGradlePlugin = "2.5.2"
 junit = "4.13.2"
 kotlin = "2.1.21"
+material3AdaptiveNavigationSuite = "1.8.1"
 navigationComposeVersion = "2.9.0-beta01"
 googleGmsGoogleServices = "4.4.2"
-firebase-bom = "33.14.0"
-git-live-firebase = "2.1.0"
+ksp = "2.0.21-1.0.28"
+ktor = "3.1.2"
+ktorfit = "2.5.2"
 
 [libraries]
 adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "adaptive" }
 adaptive-layout = { module = "org.jetbrains.compose.material3.adaptive:adaptive-layout", version.ref = "adaptive" }
 adaptive-navigation = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation", version.ref = "adaptive" }
+material3-adaptive-navigation-suite = { module = "org.jetbrains.compose.material3:material3-adaptive-navigation-suite", version.ref = "material3AdaptiveNavigationSuite" }
+
+de-jensklingenberg-ktorfit-gradle-plugin = { module = "de.jensklingenberg.ktorfit:de.jensklingenberg.ktorfit.gradle.plugin", version.ref = "deJensklingenbergKtorfitGradlePlugin" }
 jetbrains-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
@@ -36,10 +42,11 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 
-gitlive-firebase-common = { group = "dev.gitlive", name = "firebase-common", version.ref = "git-live-firebase" }
-gitlive-firebase-firestore = { group = "dev.gitlive", name = "firebase-firestore", version.ref = "git-live-firebase" }
-
-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version = "firebase-bom" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+kotlin-serialization = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktorfit = { module = "de.jensklingenberg.ktorfit:ktorfit-lib", version.ref = "ktorfit" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -48,3 +55,6 @@ composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMul
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 googleGmsGoogleServices = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }

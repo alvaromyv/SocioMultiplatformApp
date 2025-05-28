@@ -10,8 +10,11 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    id("org.jetbrains.kotlin.plugin.serialization")
     alias(libs.plugins.googleGmsGoogleServices)
+    // alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlinxSerialization)
+
+    alias(libs.plugins.ktorfit)
 }
 
 kotlin {
@@ -43,12 +46,10 @@ kotlin {
     }
     
     sourceSets {
-        
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-
-            implementation(project.dependencies.platform(libs.firebase.bom))
+            implementation(libs.ktor.client.okhttp)
         }
 
         commonMain.dependencies {
@@ -64,17 +65,20 @@ kotlin {
             ///////////////////////////// MIS DEPENDENCIAS /////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////
             implementation(libs.jetbrains.navigation.compose)
-
-            implementation(compose.material3AdaptiveNavigationSuite)
+            
             implementation(libs.adaptive)
             implementation(libs.adaptive.layout)
             implementation(libs.adaptive.navigation)
+            implementation(libs.material3.adaptive.navigation.suite)
 
             implementation(compose.materialIconsExtended)
 
-            ////////////////////////////////////////////////////////////////////////////////////////
-            implementation(libs.gitlive.firebase.common)
-            implementation(libs.gitlive.firebase.firestore)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.kotlin.serialization)
+
+            //implementation(libs.de.jensklingenberg.ktorfit.gradle.plugin)
+            //implementation(libs.ktorfit)
 
             ////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////

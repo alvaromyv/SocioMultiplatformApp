@@ -1,18 +1,16 @@
 package com.amv.socioapp.model
 
-import com.google.firebase.firestore.DocumentId
-
 data class Socio(
-    @DocumentId val dni: String = "",
-    val nSocio: Int = 0,
-    val nombre: String = "",
-    val apellidos: String = "",
-    val fechaNac: Long? = "",
+    val dni: String,
+    val nSocio: Int,
+    val nombre: String,
+    val apellidos: String,
+    val fechaNac: Long,
     val categoria: Categoria = Categoria.SENIOR,
-    val esAbonado: Boolean = false,
-    val direccion: String? = null,
-    val urlImagen: String? = null,
-    val notas: String? = null
+    val esAbonado: Boolean,
+    val direccion: String?,
+    val urlImagen: String?,
+    val notas: String?
 )
 
 enum class Categoria(val nombre: String, val cuota: Double) {
