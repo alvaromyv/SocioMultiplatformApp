@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.amv.socioapp.ui.screens.SociosScreen
 
 @Composable
 fun AppNavHost(
@@ -18,7 +19,7 @@ fun AppNavHost(
             Text("INICIO")
         }
         composable<Socios> {
-            Text("Socios")
+            SociosScreen()
         }
         composable<Contabilidad> {
             Text("CONTABILIDAD")

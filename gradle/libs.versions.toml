@@ -20,7 +20,6 @@ navigationComposeVersion = "2.9.0-beta01"
 googleGmsGoogleServices = "4.4.2"
 ksp = "2.0.21-1.0.28"
 ktor = "3.1.2"
-ktorfit = "2.5.2"
 
 [libraries]
 adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "adaptive" }
@@ -46,7 +45,6 @@ ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negoti
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 kotlin-serialization = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
-ktorfit = { module = "de.jensklingenberg.ktorfit:ktorfit-lib", version.ref = "ktorfit" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -57,4 +55,3 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 googleGmsGoogleServices = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }

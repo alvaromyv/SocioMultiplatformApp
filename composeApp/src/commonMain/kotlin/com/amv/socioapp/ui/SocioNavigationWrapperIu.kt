@@ -41,7 +41,7 @@ fun SocioNavegationWrapperUI(
     val widthSizeClass = adaptiveWindowSizeClass.windowWidthSizeClass
 
     val layoutType = when (widthSizeClass) {
-        WindowWidthSizeClass.EXPANDED -> NavigationSuiteType.NavigationDrawer
+        WindowWidthSizeClass.EXPANDED -> NavigationSuiteType.NavigationRail
         WindowWidthSizeClass.MEDIUM -> NavigationSuiteType.NavigationRail
         WindowWidthSizeClass.COMPACT -> NavigationSuiteType.NavigationBar
         else -> NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(windowAdaptiveInfo)

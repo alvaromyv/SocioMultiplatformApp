@@ -11,10 +11,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.googleGmsGoogleServices)
-    // alias(libs.plugins.ksp)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinxSerialization)
-
-    alias(libs.plugins.ktorfit)
 }
 
 kotlin {
@@ -76,9 +74,6 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.kotlin.serialization)
-
-            //implementation(libs.de.jensklingenberg.ktorfit.gradle.plugin)
-            //implementation(libs.ktorfit)
 
             ////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////
