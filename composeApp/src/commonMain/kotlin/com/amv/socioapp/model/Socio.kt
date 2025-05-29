@@ -1,5 +1,9 @@
 package com.amv.socioapp.model
 
+import com.amv.socioapp.MiParcelable
+import com.amv.socioapp.MiParcelize
+
+@MiParcelize
 data class Socio(
     val dni: String,
     val nSocio: Int,
@@ -9,11 +13,10 @@ data class Socio(
     val esAbonado: Boolean,
     val direccion: String?,
     val notas: String?
-) {
+) : MiParcelable {
     fun obtenerNombreCompleto(): String {
         return "$nombre $apellidos"
     }
-
 }
 
 enum class Categoria {

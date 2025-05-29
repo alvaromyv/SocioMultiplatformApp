@@ -17,7 +17,9 @@ import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.unit.dp
 import com.amv.socioapp.model.Categoria
 import com.amv.socioapp.model.Socio
@@ -25,7 +27,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun SociosScreen(
     socios: List<Socio> = listOf(
@@ -62,7 +64,7 @@ fun SociosScreen(
     )
 ) {
     val scope = rememberCoroutineScope()
-    val scaffoldNavigator = rememberListDetailPaneScaffoldNavigator<Socio?>()
+    val scaffoldNavigator = rememberListDetailPaneScaffoldNavigator<Socio>()
     val selectedItem = scaffoldNavigator.currentDestination?.contentKey
 
     ListDetailPaneScaffold(
@@ -82,15 +84,18 @@ fun SociosScreen(
         },
         detailPane = {
             AnimatedPane {
-                selectedItem?.let {
-                    scaffoldNavigator.currentDestination?.contentKey?.let { item ->
-                        DetailPaneContent(item)
-                    }
+                selectedItem?.let { item ->
+                    DetailPaneContent(item)
                 }
             }
         }
     )
 
+    BackHandler(enabled = scaffoldNavigator.canNavigateBack()) {
+        scope.launch {
+            scaffoldNavigator.navigateBack()
+        }
+    }
 }
 
 @Composable

@@ -10,16 +10,17 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.googleGmsGoogleServices)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinxSerialization)
-}
+    alias(libs.plugins.ktorfit)
+    alias(libs.plugins.kotlin.parcelize)}
 
 kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
+            freeCompilerArgs.addAll("-P", "plugin:org.jetbrains.kotlin.parcelize:additionalAnnotation=com.amv.socioapp.MiParcelize")
         }
     }
     
@@ -49,7 +50,6 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
         }
-
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -59,9 +59,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-            ////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////// MIS DEPENDENCIAS /////////////////////////////////////////
-            ////////////////////////////////////////////////////////////////////////////////////////
             implementation(libs.jetbrains.navigation.compose)
             
             implementation(libs.adaptive)
@@ -75,9 +73,13 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.kotlin.serialization)
 
+            implementation(libs.ktorfit.lib)
+
+            implementation(libs.ui.backhandler)
             ////////////////////////////////////////////////////////////////////////////////////////
-            ////////////////////////////////////////////////////////////////////////////////////////
-            ////////////////////////////////////////////////////////////////////////////////////////
+        }
+        wasmJsMain.dependencies {
+            implementation(libs.ktor.client.js)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
