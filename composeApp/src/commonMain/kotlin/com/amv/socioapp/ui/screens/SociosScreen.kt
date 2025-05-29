@@ -24,44 +24,12 @@ import androidx.compose.ui.unit.dp
 import com.amv.socioapp.model.Categoria
 import com.amv.socioapp.model.Socio
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun SociosScreen(
-    socios: List<Socio> = listOf(
-        Socio(
-            dni = "12345678A",
-            nSocio = 1,
-            nombre = "Juan",
-            apellidos = "Pérez",
-            categoria = Categoria.SENIOR,
-            esAbonado = true,
-            direccion = "Calle Falsa 123",
-            notas = "Siempre puntual"
-        ),
-        Socio(
-            dni = "87654321B",
-            nSocio = 2,
-            nombre = "Ana",
-            apellidos = "López",
-            categoria = Categoria.INFANTIL,
-            esAbonado = false,
-            direccion = "Avenida Siempre Viva 742",
-            notas = null
-        ),
-        Socio(
-            dni = "11223344C",
-            nSocio = 3,
-            nombre = "Carlos",
-            apellidos = "Martínez",
-            categoria = Categoria.SENIOR,
-            esAbonado = true,
-            direccion = null,
-            notas = "Socio fundador"
-        )
-    )
+    socios: List<Socio>
 ) {
     val scope = rememberCoroutineScope()
     val scaffoldNavigator = rememberListDetailPaneScaffoldNavigator<Socio>()
@@ -104,7 +72,7 @@ fun ListPaneContent(
     onItemClick: (Socio) -> Unit,
 ) {
     LazyColumn(
-        
+
     ) { 
         items(items) { item ->
             ListItem(
@@ -112,7 +80,7 @@ fun ListPaneContent(
                 leadingContent = {
                     Icon(
                         imageVector = Icons.Outlined.AccountCircle,
-                        contentDescription = "Avatar",
+                        contentDescription = null,
                         modifier = Modifier.size(40.dp)
                     )
                 },
@@ -134,6 +102,5 @@ fun DetailPaneContent(
         Text(text = "Categoría: ${socio.categoria}")
         Text(text = "Abonado: ${if (socio.esAbonado) "Sí" else "No"}")
         Text(text = "Dirección: ${socio.direccion ?: "Sin especificar"}")
-        Text(text = "Notas: ${socio.notas ?: "Sin notas"}")
     }
 }

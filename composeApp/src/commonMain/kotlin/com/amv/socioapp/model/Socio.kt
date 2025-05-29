@@ -9,16 +9,19 @@ data class Socio(
     val nSocio: Int,
     val nombre: String,
     val apellidos: String,
-    val categoria: Categoria = Categoria.SENIOR,
+    val fechaNacimiento: String?,
+    val categoria: Categoria,
     val esAbonado: Boolean,
     val direccion: String?,
-    val notas: String?
+    val urlImagen: String?
 ) : MiParcelable {
     fun obtenerNombreCompleto(): String {
         return "$nombre $apellidos"
     }
 }
 
-enum class Categoria {
-    INFANTIL, SENIOR
+enum class Categoria(private val descripcion: String, private val cuota: Double) {
+    INFANTIL("Infantil", 10.0),
+    ADULTO("Adulto", 20.0),
+    SENIOR("Senior", 15.0)
 }
