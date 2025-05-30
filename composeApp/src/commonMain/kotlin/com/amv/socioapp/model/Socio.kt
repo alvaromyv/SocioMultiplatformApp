@@ -2,6 +2,7 @@ package com.amv.socioapp.model
 
 import com.amv.socioapp.util.MiParcelable
 import com.amv.socioapp.util.MiParcelize
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -10,14 +11,12 @@ import kotlinx.serialization.Serializable
 data class Socio(
     val id: Int,
     val nSocio: Int,
-    @SerialName("fecha_nacimiento")val fechaNacimiento: String,
-    @SerialName("fecha_antiguedad") val fechaAntiguedad: String,
+    @SerialName("fecha_nacimiento")val fechaNacimiento: LocalDate,
+    @SerialName("fecha_antiguedad") val fechaAntiguedad: LocalDate,
     val categoria: Categoria,
     @SerialName("abonado") val esAbonado: Boolean,
-    val direccion: String?,
-    val urlImagen: String?,
-    @SerialName("invitado_por") val invitadoPor: Int?,
-    @SerialName("usuario_id") val idUsuario: Int?
+    @SerialName("usuario_id") val usuarioId: Int?,
+    val usuario: Usuario? = null
 ) : MiParcelable {
 
 }

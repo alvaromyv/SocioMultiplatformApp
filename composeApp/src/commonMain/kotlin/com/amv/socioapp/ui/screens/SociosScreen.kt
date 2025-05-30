@@ -51,74 +51,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun SociosScreen(
-    socios: List<Socio> = listOf(
-        Socio(
-            dni = "10102030A", nSocio = 16, nombre = "Ricardo", apellidos = "Moya Soler",
-            telefono = "600101010", correo = "ricardo.moya@example.com", fechaNacimiento = "1975-04-12",
-            fechaAntiguedad = "2005-01-10", categoria = com.amv.socioapp.model.Categoria.ADULTO, esAbonado = true,
-            direccion = "Calle Luna 23, Madrid", urlImagen = "https://picsum.photos/seed/ricardo/200"
-        ),
-        Socio(
-            dni = "20203040B", nSocio = 17, nombre = "Isabel", apellidos = "Garrido Núñez",
-            telefono = "611202020", correo = "isabel.garrido@example.com", fechaNacimiento = "1990-08-22",
-            fechaAntiguedad = "2018-06-15", categoria = com.amv.socioapp.model.Categoria.ADULTO, esAbonado = false,
-            direccion = "Avenida del Puerto 8, Valencia", urlImagen = "https://picsum.photos/seed/isabel/200"
-        ),
-        Socio(
-            dni = "30304050C", nSocio = 18, nombre = "Alberto", apellidos = "Campos Durán",
-            telefono = null, correo = "alberto.campos@example.com", fechaNacimiento = "2013-05-30",
-            fechaAntiguedad = "2022-03-01", categoria = com.amv.socioapp.model.Categoria.INFANTIL, esAbonado = true,
-            direccion = "Plaza Nueva 1, Sevilla", urlImagen = "https://picsum.photos/seed/alberto/200"
-        ),
-        Socio(
-            dni = "40405060D", nSocio = 19, nombre = "Beatriz", apellidos = "Vidal Cruz",
-            telefono = "633404040", correo = null, fechaNacimiento = "1962-11-05",
-            fechaAntiguedad = "2000-11-20", categoria = com.amv.socioapp.model.Categoria.SENIOR, esAbonado = true,
-            direccion = "Calle del Carmen 15, Barcelona", urlImagen = "https://picsum.photos/seed/beatriz/200"
-        ),
-        Socio(
-            dni = "50506070E", nSocio = 20, nombre = "Óscar", apellidos = "Prieto Ramos",
-            telefono = "644505050", correo = "oscar.prieto@example.com", fechaNacimiento = "1983-02-18",
-            fechaAntiguedad = "2010-09-05", categoria = com.amv.socioapp.model.Categoria.ADULTO, esAbonado = true,
-            direccion = null, urlImagen = "https://picsum.photos/seed/oscar/200"
-        ),
-        Socio(
-            dni = "60607080F", nSocio = 21, nombre = "Mónica", apellidos = "Serrano Bravo",
-            telefono = "655606060", correo = "monica.serrano@example.com", fechaNacimiento = "2016-09-10",
-            fechaAntiguedad = "2023-01-15", categoria = com.amv.socioapp.model.Categoria.INFANTIL, esAbonado = false,
-            direccion = "Paseo de la Castellana 100, Madrid", urlImagen = "https://picsum.photos/seed/monica/200"
-        ),
-        Socio(
-            dni = "70708090G", nSocio = 22, nombre = "Fernando", apellidos = "Reyes Soto",
-            telefono = null, correo = null, fechaNacimiento = "1953-07-25",
-            fechaAntiguedad = "1995-05-01", categoria = com.amv.socioapp.model.Categoria.SENIOR, esAbonado = true,
-            direccion = "Calle Ancha 7, Granada", urlImagen = "https://picsum.photos/seed/fernando/200"
-        ),
-        Socio(
-            dni = "80809000H", nSocio = 23, nombre = "Natalia", apellidos = "Flores Vega",
-            telefono = "677808080", correo = "natalia.flores@example.com", fechaNacimiento = "1998-12-01",
-            fechaAntiguedad = "2020-02-20", categoria = com.amv.socioapp.model.Categoria.ADULTO, esAbonado = true,
-            direccion = "Urbanización Las Lomas 22, Marbella", urlImagen = null
-        ),
-        Socio(
-            dni = "90900010I", nSocio = 24, nombre = "Hugo", apellidos = "Pascual Ibáñez",
-            telefono = "688909090", correo = "hugo.pascual@example.com", fechaNacimiento = "2014-03-03",
-            fechaAntiguedad = "2022-09-10", categoria = com.amv.socioapp.model.Categoria.INFANTIL, esAbonado = true,
-            direccion = "Calle del Pez 5, Madrid", urlImagen = "https://picsum.photos/seed/hugo/200"
-        ),
-        Socio(
-            dni = "00011120J", nSocio = 25, nombre = "Silvia", apellidos = "Aguilar Roca",
-            telefono = "699000000", correo = "silvia.aguilar@example.com", fechaNacimiento = "1960-01-20",
-            fechaAntiguedad = "1998-07-01", categoria = com.amv.socioapp.model.Categoria.SENIOR, esAbonado = false,
-            direccion = "Avenida Diagonal 300, Barcelona", urlImagen = "https://picsum.photos/seed/silvia/200"
-        ),
-        Socio(
-            dni = "11122230K", nSocio = 26, nombre = "Daniel", apellidos = "Lorenzo Ortiz",
-            telefono = "711111111", correo = "daniel.lorenzo@example.com", fechaNacimiento = "1979-06-14",
-            fechaAntiguedad = "2008-04-11", categoria = com.amv.socioapp.model.Categoria.ADULTO, esAbonado = true,
-            direccion = "Calle Mayor 55, Zaragoza", urlImagen = "https://picsum.photos/seed/daniel/200"
-        ),
-    )
+    socios: List<Socio> = listOf()
 ) {
     val scope = rememberCoroutineScope()
     val scaffoldNavigator = rememberListDetailPaneScaffoldNavigator<Socio>()

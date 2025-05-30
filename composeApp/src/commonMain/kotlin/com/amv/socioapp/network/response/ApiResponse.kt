@@ -10,12 +10,15 @@ sealed class ApiResponse<out T> {
 
     @Serializable
     @SerialName("success")
-    data class Success<T>(override val ok: String, val data: T, val info: InformationDataResponse) : ApiResponse<T>()
+    data class Success<T>(override val ok: String, val data: SuccessDataResponse<T>) : ApiResponse<T>()
 
     @Serializable
     @SerialName("error")
     data class Error(override val ok: String, val error: ErrorDataResponse) : ApiResponse<Nothing>()
 }
+
+@Serializable
+data class SuccessDataResponse<T>(val result: T, val info: InformationDataResponse)
 
 @Serializable
 data class InformationDataResponse(val message: String, val numberOfEntriesDeleted: Int?)
