@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class ApiResponse<out T> {
-    @SerialName("ok")
+    @SerialName("status")
     abstract val ok: String
 
     @Serializable

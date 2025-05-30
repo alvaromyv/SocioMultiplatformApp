@@ -1,4 +1,4 @@
-package com.amv.socioapp
+package com.amv.socioapp.util
 
 // commonMain/Platform.kt
 @Target(AnnotationTarget.CLASS)

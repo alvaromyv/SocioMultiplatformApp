@@ -1,4 +1,4 @@
-package com.amv.socioapp
+package com.amv.socioapp.util
 
 // wasmJs/Platform.kt
 actual interface MiParcelable

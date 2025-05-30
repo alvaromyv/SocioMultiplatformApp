@@ -10,6 +10,7 @@ import kotlinx.browser.window
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalBrowserHistoryApi::class)
 fun main() {
+    AppEnvironment.setupAppEnvironment()
     ComposeViewport(document.body!!) {
         App(onNavHostReady = { window.bindToNavigation(it) })
     }

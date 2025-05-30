@@ -19,7 +19,7 @@ fun AppNavHost(
             Text("INICIO")
         }
         composable<Socios> {
-            SociosScreen(emptyList())
+            SociosScreen()
         }
         composable<Club> {
             Text("CLUB")
