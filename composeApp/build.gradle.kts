@@ -61,30 +61,23 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             ///////////////////////////// MIS DEPENDENCIAS /////////////////////////////////////////
             implementation(libs.jetbrains.navigation.compose)
-            
             implementation(libs.adaptive)
             implementation(libs.adaptive.layout)
             implementation(libs.adaptive.navigation)
             implementation(libs.material3.adaptive.navigation.suite)
-
             implementation(compose.materialIconsExtended)
-
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.auth)
             implementation(libs.kotlin.serialization)
-
             implementation(libs.ktorfit.lib)
-
             implementation(libs.ui.backhandler)
-
             implementation(libs.coil.compose)
+            implementation(libs.coil.compose.core)
             implementation(libs.coil.network.ktor)
-
+            implementation(libs.coil.mp)
             implementation(libs.kotlinx.datetime)
-
             implementation(libs.multiplatform.settings.no.arg)
-
             implementation(libs.lifecycle.viewmodel.compose)
             ////////////////////////////////////////////////////////////////////////////////////////
         }

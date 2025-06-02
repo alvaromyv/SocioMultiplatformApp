@@ -32,7 +32,7 @@ object NetworkUtils {
         install(Auth) {
             bearer {
                 loadTokens {
-                    BearerTokens("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyb290QGdtYWlsLmNvbSIsImlhdCI6MTc0ODg2MjgyMywiZXhwIjoxNzQ4ODY2NDIzfQ.M7MjZuIUJOd6cXgwshBLquUh51QYn8M1lKr20cmdZKQ", null)
+                    BearerTokens("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyb290QGdtYWlsLmNvbSIsImlhdCI6MTc0ODg4MDE2MCwiZXhwIjoxNzQ4ODgzNzYwfQ.RSPENgkffWHJLwyCLJLgFfomg9V8eTScfmVG1ojbT8c", null)
                 }
             }
         }
