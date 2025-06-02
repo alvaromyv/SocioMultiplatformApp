@@ -6,10 +6,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.amv.socioapp.ui.screens.SociosScreen
+import com.amv.socioapp.viewmodel.SociosViewModel
 
 @Composable
 fun AppNavHost(
     navController: NavHostController,
+    sociosViewModel: SociosViewModel
 ) {
     NavHost(
         navController = navController,
@@ -19,7 +21,7 @@ fun AppNavHost(
             Text("INICIO")
         }
         composable<Socios> {
-            SociosScreen()
+            SociosScreen(sociosViewModel)
         }
         composable<Club> {
             Text("CLUB")

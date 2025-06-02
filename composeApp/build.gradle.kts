@@ -20,7 +20,7 @@ kotlin {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
-            freeCompilerArgs.addAll("-P", "plugin:org.jetbrains.kotlin.parcelize:additionalAnnotation=com.amv.socioapp.MiParcelize")
+            freeCompilerArgs.addAll("-P", "plugin:org.jetbrains.kotlin.parcelize:additionalAnnotation=com.amv.socioapp.util.MyParcelize")
         }
     }
     
@@ -84,6 +84,8 @@ kotlin {
             implementation(libs.kotlinx.datetime)
 
             implementation(libs.multiplatform.settings.no.arg)
+
+            implementation(libs.lifecycle.viewmodel.compose)
             ////////////////////////////////////////////////////////////////////////////////////////
         }
         wasmJsMain.dependencies {

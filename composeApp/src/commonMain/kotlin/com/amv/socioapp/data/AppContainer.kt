@@ -1,8 +1,8 @@
 package com.amv.socioapp.data
 
 import com.amv.socioapp.network.NetworkUtils.httpClient
-import com.amv.socioapp.network.SocioServices
 import com.amv.socioapp.network.createSocioServices
+import com.amv.socioapp.network.SocioServices
 import de.jensklingenberg.ktorfit.Ktorfit
 
 interface AppContainer {
