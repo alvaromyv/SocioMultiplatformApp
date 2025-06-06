@@ -22,12 +22,14 @@ data class Socio(
 ) : MyParcelable {
 //    val fechaNacimiento = Instant.fromEpochMilliseconds(fechaNacimientoMillis).toLocalDateTime(TimeZone.UTC)
 //    val fechaAntiguedad = Instant.fromEpochMilliseconds(fechaAntiguedadMillis).toLocalDateTime(TimeZone.UTC)
+
 }
 
 @MyParcelize
-enum class Categoria(private val descripcion: String, private val cuota: Double): MyParcelable {
+enum class Categoria(val descripcion: String, val cuota: Double): MyParcelable {
     @SerialName("infantil") INFANTIL("Menor de 12 años", 10.0),
     @SerialName("juvenil") JUVENIL("Entre 12 y 17 años", 15.0),
     @SerialName("adulto") ADULTO("Entre 18 y 64 años", 20.0),
     @SerialName("senior") SENIOR("65 años o más", 12.0),
 }
+

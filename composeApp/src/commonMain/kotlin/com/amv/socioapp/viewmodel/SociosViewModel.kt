@@ -11,8 +11,9 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.amv.socioapp.AppEnvironment
 import com.amv.socioapp.data.SociosRepository
 import com.amv.socioapp.model.Socio
-import com.amv.socioapp.network.response.ResponseError
-import com.amv.socioapp.network.response.ResponseSuccess
+import com.amv.socioapp.network.ResponseError
+import com.amv.socioapp.network.ResponseSuccess
+import com.amv.socioapp.network.SociosResponse
 import kotlinx.coroutines.launch
 
 sealed interface SociosUiState {
@@ -34,7 +35,12 @@ class SociosViewModel(private val sociosRepository: SociosRepository) : ViewMode
         viewModelScope.launch {
             sociosUiState = try {
                 when(val response = sociosRepository.obtenerSocios()) {
-                    is ResponseSuccess -> SociosUiState.Success(response.data.result)
+                    is ResponseSuccess -> {
+                        when (val content = response.data) {
+                            is SociosResponse -> SociosUiState.Success(content.result)
+                            else -> return@launch
+                        }
+                    }
                     is ResponseError -> SociosUiState.Error(response.error.message)
                     else -> return@launch
                 }

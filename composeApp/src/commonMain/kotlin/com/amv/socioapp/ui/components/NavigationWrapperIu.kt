@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DrawerDefaults
@@ -26,6 +27,7 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuite
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteColors
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldLayout
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
@@ -114,9 +116,12 @@ fun SocioNavegationWrapperUI(
                         title = destination.label,
                         navigationIcon = Icons.Filled.Search,
                         navigationIconContentDescription = "Buscar",
+                        actualizarIcon = Icons.Filled.Refresh,
+                        actualizarIconContentDescription = "Actualizar",
                         actionIcon = Icons.Filled.Settings,
                         actionIconContentDescription = "Ajustes",
                         onNavigationClick = { },
+                        onActualizarClick = { },
                         onActionClick = { }
                     )
                 }

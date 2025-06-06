@@ -15,9 +15,12 @@ fun SocioTopAppBar(
     title: String,
     navigationIcon: ImageVector,
     navigationIconContentDescription: String,
+    actualizarIcon: ImageVector,
+    actualizarIconContentDescription: String,
     actionIcon: ImageVector,
     actionIconContentDescription: String,
     onNavigationClick: () -> Unit = {},
+    onActualizarClick: () -> Unit = {},
     onActionClick: () -> Unit = {},
 ) {
     CenterAlignedTopAppBar(
@@ -32,6 +35,13 @@ fun SocioTopAppBar(
             }
         },
         actions = {
+            IconButton(onClick = onActualizarClick) {
+                Icon(
+                    imageVector = actualizarIcon,
+                    contentDescription = actualizarIconContentDescription,
+                    tint = MaterialTheme.colorScheme.onSurface,
+                )
+            }
             IconButton(onClick = onActionClick) {
                 Icon(
                     imageVector = actionIcon,

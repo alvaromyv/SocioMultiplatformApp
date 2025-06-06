@@ -22,7 +22,23 @@ object SessionManager {
         settings.putLong(EXPIRATION_TIME, milisegundosExpiracionToken)
     }
 
-    fun comprobarSesion(): Boolean {
+    fun cerrarSesion() {
+        settings.remove(BEARER_TOKEN)
+        settings.remove(EXPIRATION_TIME)
+        _sesion.value = false
+    }
+
+    fun obtenerToken(): String? {
+        return if (comprobarSesion()) {
+            settings.getString(BEARER_TOKEN, "")
+        } else {
+            null
+        }
+    }
+
+    fun esSesionValida(): Boolean = _sesion.value
+
+    private fun comprobarSesion(): Boolean {
         return try {
             if(settings.getString(BEARER_TOKEN, "").isEmpty() || settings.getLong(EXPIRATION_TIME, 0) == 0L){
                 false

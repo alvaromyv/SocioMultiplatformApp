@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.amv.socioapp.ui.screens.SociosScreen
 import com.amv.socioapp.viewmodel.SociosViewModel
 
@@ -23,8 +24,12 @@ fun AppNavHost(
         composable<Socios> {
             SociosScreen(sociosViewModel)
         }
-        composable<Club> {
-            Text("CLUB")
+        composable<Usuarios> {
+            Text("USUARIOS")
+        }
+        composable<Formulario> { backStackEntry ->
+            val modoEdicion = backStackEntry.toRoute<Formulario>().modoEdicion
+            Text("FORMULARIO $modoEdicion")
         }
     }
 }

@@ -18,6 +18,7 @@ import coil3.util.DebugLogger
 import com.amv.socioapp.navigation.AppNavHost
 import com.amv.socioapp.network.NetworkUtils
 import com.amv.socioapp.ui.components.SocioNavegationWrapperUI
+import com.amv.socioapp.ui.theme.SocioAppTheme
 import com.amv.socioapp.viewmodel.SociosViewModel
 import okio.FileSystem
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -26,22 +27,13 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Preview
 fun App(
     onNavHostReady: suspend (NavController) -> Unit = {},
-    disableDiskCache: Boolean = false,
     sociosViewModel: SociosViewModel = viewModel(factory = SociosViewModel.Factory),
 ) {
-    MaterialTheme {
+    SocioAppTheme {
         val navController = rememberNavController()
 
-        setSingletonImageLoaderFactory { context ->
-            if (disableDiskCache) context.asyncImageLoader() else
-                    context.asyncImageLoader().enableDiskCache()
-        }
-
         SocioNavegationWrapperUI(navController) {
-            AppNavHost(
-                navController,
-                sociosViewModel
-            )
+            AppNavHost(navController, sociosViewModel)
         }
 
         LaunchedEffect(navController) {
@@ -49,28 +41,3 @@ fun App(
         }
     }
 }
-
-fun PlatformContext.asyncImageLoader() =
-    ImageLoader
-        .Builder(this)
-        .components { add(KtorNetworkFetcherFactory(NetworkUtils.httpClient)) }
-        .crossfade(true)
-        .networkCachePolicy(CachePolicy.ENABLED)
-        .diskCachePolicy(CachePolicy.ENABLED)
-        .memoryCachePolicy(CachePolicy.ENABLED)
-        .memoryCache {
-            MemoryCache.Builder()
-                .maxSizePercent(this, 0.25)
-                .strongReferencesEnabled(true)
-                .build()
-        }
-        .logger(DebugLogger())
-        .build()
-
-
-fun ImageLoader.enableDiskCache() = this.newBuilder()
-    .diskCache {
-        DiskCache.Builder()
-            .directory(FileSystem.SYSTEM_TEMPORARY_DIRECTORY / "image_cache")
-            .build()
-    }.build()

@@ -1,9 +1,13 @@
 package com.amv.socioapp.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.Handshake
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Stadium
+import androidx.compose.material.icons.outlined.Group
+import androidx.compose.material.icons.outlined.Handshake
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Stadium
@@ -22,22 +26,21 @@ enum class TopLevelDestination(
     val route: String,
 ) {
     INICIO(Icons.Filled.Home, Icons.Outlined.Home, "Inicio", getSerialName<Inicio>()),
-    SOCIOS(Icons.Filled.Person, Icons.Outlined.Person, "Socios", getSerialName<Socios>()),
-    CLUB(Icons.Filled.Stadium, Icons.Outlined.Stadium, "Club", getSerialName<Club>())
+    SOCIOS(Icons.Filled.Group, Icons.Outlined.Group, "Socios", getSerialName<Socios>()),
+    USUARIOS(Icons.Filled.Person, Icons.Outlined.Person, "Usuarios", getSerialName<Usuarios>())
 }
 
-@Serializable
-@SerialName("inicio")
+@Serializable @SerialName("inicio")
 data object Inicio
 
-@Serializable
-@SerialName("socios")
+@Serializable @SerialName("socios")
 object Socios
 
-@Serializable
-@SerialName("club")
-object Club
+@Serializable @SerialName("usuarios")
+object Usuarios
 
+@Serializable @SerialName("formulario")
+data class Formulario(val modoEdicion: Boolean)
 
 @OptIn(ExperimentalSerializationApi::class)
 inline fun <reified T> getSerialName(): String {

@@ -1,11 +1,15 @@
 package com.amv.socioapp.ui.screens
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -14,8 +18,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
@@ -25,15 +32,17 @@ import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaf
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.amv.socioapp.model.Categoria
 import com.amv.socioapp.model.Socio
 import com.amv.socioapp.viewmodel.SociosUiState
 import com.amv.socioapp.viewmodel.SociosViewModel
@@ -55,7 +64,7 @@ fun SociosScreen(
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalComposeUiApi::class)
 @Composable
-fun ListDetailPaneScaffoldSocios(
+private fun ListDetailPaneScaffoldSocios(
     socios: List<Socio>
 ) {
     val scope = rememberCoroutineScope()
@@ -92,7 +101,7 @@ fun ListDetailPaneScaffoldSocios(
     }
 }
 @Composable
-fun ListPaneContent(
+private fun ListPaneContent(
     items: List<Socio>,
     onItemClick: (Socio) -> Unit,
 ) {
@@ -126,22 +135,34 @@ fun ListPaneContent(
 }
 
 @Composable
-fun DetailPaneContent(socio: Socio) {
-    ElevatedCard(
+private fun DetailPaneContent(socio: Socio) {
+    OutlinedCard(
         modifier = Modifier
             .fillMaxSize()
             .padding(12.dp),
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 8.dp
-        )
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(8.dp)
     ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(32.dp)
+        ){
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 16.dp)) {
+                SocioAvatar(imageUrl = socio.usuario.avatarUrl, contentDescription = socio.usuario.obtenerNombreCompleto(), iconSize = 128.dp)
+                Column(modifier = Modifier.padding(start = 16.dp)) {
+                    Text(text = socio.usuario.obtenerNombreCompleto(), style = MaterialTheme.typography.headlineMedium)
+                    Text(text = "Socio Nº${socio.nSocio}", style = MaterialTheme.typography.headlineSmall)
+                }
+            }
+            HorizontalDivider(color = MaterialTheme.colorScheme.outline)
 
+        }
     }
 }
 
 @Composable
-fun SocioAvatar(
+private fun SocioAvatar(
     imageUrl: String?,
     contentDescription: String?,
     modifier: Modifier = Modifier,
