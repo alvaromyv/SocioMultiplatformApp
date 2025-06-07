@@ -1,4 +1,4 @@
-package com.amv.socioapp.network
+package com.amv.socioapp.network.model
 
 import com.amv.socioapp.model.Categoria
 import com.amv.socioapp.model.Rol
@@ -20,4 +20,10 @@ data class UsuarioRequest(
     val email: String,
     val password: String,
     val rol: Rol,
+)
+
+@Serializable
+data class AuthRequest(
+    val email: String,
+    val password: String
 )

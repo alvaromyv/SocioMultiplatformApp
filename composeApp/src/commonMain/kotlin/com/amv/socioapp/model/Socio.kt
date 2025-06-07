@@ -1,27 +1,31 @@
 package com.amv.socioapp.model
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import com.amv.socioapp.util.MyParcelable
 import com.amv.socioapp.util.MyParcelize
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @MyParcelize
 @Serializable
 data class Socio(
     val id: Int,
     @SerialName("n_socio") val nSocio: Int,
-//    @SerialName("fecha_nacimiento") private val fechaNacimientoMillis: Long,
-//    @SerialName("fecha_antiguedad") private val fechaAntiguedadMillis: Long,
+    @SerialName("fecha_nacimiento") private val _fechaNacimiento: String,
+    @SerialName("fecha_antiguedad") private val _fechaAntiguedad: String,
     val categoria: Categoria,
     @SerialName("abonado") val esAbonado: Boolean,
-    @SerialName("usuario_id") val usuarioId: Int?,
-    val usuario: Usuario
+    @SerialName("usuario_id") private val usuarioId: Int,
+    val usuario: Usuario,
 ) : MyParcelable {
-//    val fechaNacimiento = Instant.fromEpochMilliseconds(fechaNacimientoMillis).toLocalDateTime(TimeZone.UTC)
-//    val fechaAntiguedad = Instant.fromEpochMilliseconds(fechaAntiguedadMillis).toLocalDateTime(TimeZone.UTC)
+    val fechaNacimiento: LocalDateTime
+        get() = Instant.parse(_fechaNacimiento).toLocalDateTime(TimeZone.UTC)
+
+    val fechaAntiguedad: LocalDateTime
+        get() = Instant.parse(_fechaAntiguedad).toLocalDateTime(TimeZone.UTC)
 
 }
 

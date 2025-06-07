@@ -1,4 +1,4 @@
-package com.amv.socioapp.viewmodel
+package com.amv.socioapp.ui.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,9 +11,9 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.amv.socioapp.AppEnvironment
 import com.amv.socioapp.data.SociosRepository
 import com.amv.socioapp.model.Socio
-import com.amv.socioapp.network.ResponseError
-import com.amv.socioapp.network.ResponseSuccess
-import com.amv.socioapp.network.SociosResponse
+import com.amv.socioapp.network.model.ResponseError
+import com.amv.socioapp.network.model.ResponseSuccess
+import com.amv.socioapp.network.model.SociosResponse
 import kotlinx.coroutines.launch
 
 sealed interface SociosUiState {

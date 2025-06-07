@@ -1,11 +1,12 @@
-package com.amv.socioapp.network
+package com.amv.socioapp.network.service
 
+import com.amv.socioapp.network.model.BaseResponse
+import com.amv.socioapp.network.model.SocioRequest
 import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.DELETE
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.Path
-import de.jensklingenberg.ktorfit.internal.InternalKtorfitApi
 
 interface SocioServices {
     @GET("socios")

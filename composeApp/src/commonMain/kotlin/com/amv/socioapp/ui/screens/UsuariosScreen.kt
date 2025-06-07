@@ -1,8 +1,6 @@
 package com.amv.socioapp.ui.screens
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,9 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
@@ -21,41 +17,30 @@ import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.amv.socioapp.model.Socio
-import com.amv.socioapp.ui.viewmodel.SociosUiState
-import com.amv.socioapp.ui.viewmodel.SociosViewModel
+import com.amv.socioapp.model.Usuario
 import com.amv.socioapp.util.UsuarioAvatar
 import kotlinx.coroutines.launch
 
-
 @Composable
-fun SociosScreen(
-    vm: SociosViewModel,
+fun UsuariosScreen(
+
 ) {
-    LaunchedEffect(Unit) { vm.leerTodos() }
-    when(val estado = vm.sociosUiState) {
-        is SociosUiState.Success -> ListDetailPaneScaffoldSocios(estado.socios)
-        SociosUiState.Loading -> {}
-        is SociosUiState.Error -> {}
-        is SociosUiState.Exception -> {}
-    }
+    // LaunchedEffect(Unit) { TODO() }
+
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalComposeUiApi::class)
 @Composable
-private fun ListDetailPaneScaffoldSocios(
-    socios: List<Socio>
+private fun ListDetailPaneScaffolUsuarios(
+    usuarios: List<Usuario>
 ) {
     val scope = rememberCoroutineScope()
-    val scaffoldNavigator = rememberListDetailPaneScaffoldNavigator<Socio>()
+    val scaffoldNavigator = rememberListDetailPaneScaffoldNavigator<Usuario>()
     val selectedItem = scaffoldNavigator.currentDestination?.contentKey
 
     ListDetailPaneScaffold(
@@ -64,7 +49,7 @@ private fun ListDetailPaneScaffoldSocios(
         listPane = {
             AnimatedPane {
                 ListPaneContent(
-                    items = socios,
+                    items = usuarios,
                     onItemClick = { item ->
                         scope.launch {
                             scaffoldNavigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item)
@@ -87,10 +72,11 @@ private fun ListDetailPaneScaffoldSocios(
         }
     }
 }
+
 @Composable
 private fun ListPaneContent(
-    items: List<Socio>,
-    onItemClick: (Socio) -> Unit,
+    items: List<Usuario>,
+    onItemClick: (Usuario) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -99,17 +85,16 @@ private fun ListPaneContent(
     ) {
         items(items) { item ->
             ListItem(
-                headlineContent = { Text(item.usuario.obtenerNombreCompleto()) },
+                headlineContent = { Text(item.obtenerNombreCompleto()) },
                 supportingContent = {
-                    Row (modifier = Modifier.fillMaxWidth()) {
-                        Text(text = item.categoria.name, modifier = Modifier.weight(1f))
-                        Text(text = item.fechaAntiguedad.toString(), modifier = Modifier.weight(1f), textAlign = TextAlign.End)
-                    }
+//                    Row (modifier = Modifier.fillMaxWidth()) {
+//                        Text(text = item.categoria.name, modifier = Modifier.weight(1f))
+//                    }
                 },
                 leadingContent = {
                     UsuarioAvatar(
-                        imageUrl = item.usuario.avatarUrl,
-                        contentDescription = item.usuario.obtenerNombreCompleto()
+                        imageUrl = item.avatarUrl,
+                        contentDescription = item.obtenerNombreCompleto()
                     )
                 },
                 modifier = Modifier
@@ -122,7 +107,7 @@ private fun ListPaneContent(
 }
 
 @Composable
-private fun DetailPaneContent(socio: Socio) {
+private fun DetailPaneContent(usuario: Usuario) {
     OutlinedCard(
         modifier = Modifier
             .fillMaxSize()
@@ -130,20 +115,6 @@ private fun DetailPaneContent(socio: Socio) {
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(32.dp)
-        ){
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 16.dp)) {
-                UsuarioAvatar(imageUrl = socio.usuario.avatarUrl, contentDescription = socio.usuario.obtenerNombreCompleto(), iconSize = 128.dp)
-                Column(modifier = Modifier.padding(start = 16.dp)) {
-                    Text(text = socio.usuario.obtenerNombreCompleto(), style = MaterialTheme.typography.headlineMedium)
-                    Text(text = "Socio Nº${socio.nSocio}", style = MaterialTheme.typography.headlineSmall)
-                }
-            }
-            HorizontalDivider(color = MaterialTheme.colorScheme.outline)
 
-        }
     }
 }

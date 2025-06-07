@@ -1,9 +1,5 @@
 package com.amv.socioapp.ui.theme
 
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import org.jetbrains.compose.resources.Font
-
 
 //val bodyFontFamily = FontFamily(
 //    Font(Res.font.roboto_regular, weight = FontWeight.Normal)

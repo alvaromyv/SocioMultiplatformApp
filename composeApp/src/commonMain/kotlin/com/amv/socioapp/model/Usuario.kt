@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Usuario(
     val id: Int,
-    @SerialName("avatar_url") val avatarUrl: String?,
+    @SerialName("avatar_url") val avatarUrl: String,
     val nombre: String,
     val apellidos: String?,
     val telefono: String?,
@@ -18,7 +18,10 @@ data class Usuario(
     val rol: Rol,
 ) : MyParcelable {
     fun obtenerNombreCompleto(): String {
-        return "$nombre $apellidos"
+        apellidos.let {
+            return "$nombre $apellidos"
+        }
+        return nombre
     }
 }
 

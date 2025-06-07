@@ -1,4 +1,14 @@
 package com.amv.socioapp.network
+import com.amv.socioapp.network.model.AuthResponse
+import com.amv.socioapp.network.model.BaseResponse
+import com.amv.socioapp.network.model.ContentResponse
+import com.amv.socioapp.network.model.ResponseError
+import com.amv.socioapp.network.model.ResponseSuccess
+import com.amv.socioapp.network.model.SimpleResponse
+import com.amv.socioapp.network.model.SociosResponse
+import com.amv.socioapp.network.model.UnSocioResponse
+import com.amv.socioapp.network.model.UnUsuarioResponse
+import com.amv.socioapp.network.model.UsuariosResponse
 import de.jensklingenberg.ktorfit.Ktorfit
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.auth.Auth
@@ -12,8 +22,8 @@ import kotlinx.serialization.modules.polymorphic
 
 object NetworkUtils {
     private const val BASE_URL =
-        "http://10.0.2.2:3000/"
-        // "http://localhost:3000/"
+        //"http://10.0.2.2:3000/"
+        "http://localhost:3000/"
 
     val httpClient = HttpClient {
         install(ContentNegotiation) {
@@ -26,6 +36,8 @@ object NetworkUtils {
                             subclass(ResponseError::class, ResponseError.serializer())
                         }
                         polymorphic(ContentResponse::class) {
+                            subclass(SimpleResponse::class, SimpleResponse.serializer())
+                            subclass(AuthResponse::class, AuthResponse.serializer())
                             subclass(SociosResponse::class, SociosResponse.serializer())
                             subclass(UnSocioResponse::class, UnSocioResponse.serializer())
                             subclass(UsuariosResponse::class, UsuariosResponse.serializer())
@@ -38,7 +50,7 @@ object NetworkUtils {
         install(Auth) {
             bearer {
                 loadTokens {
-                    BearerTokens("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyb290QGdtYWlsLmNvbSIsImlhdCI6MTc0OTIxNjE2NywiZXhwIjoxNzQ5NDMyMTY3fQ.mAl5fzB1IAjF8gTcZRM53SHcZt4h5IA03LApfdoC5CQ", null)
+                    BearerTokens("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyb290QGdtYWlsLmNvbSIsImlhdCI6MTc0OTMxODk4NCwiZXhwIjoxNzQ5NTM0OTg0fQ.HTZsuz2l1G0jKAgRQuylXitFxCFrOX5jh-ZJJpj-03E", null)
                 }
             }
         }

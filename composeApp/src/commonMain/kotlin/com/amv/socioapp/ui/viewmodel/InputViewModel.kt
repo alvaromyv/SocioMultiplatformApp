@@ -1,4 +1,4 @@
-package com.amv.socioapp.viewmodel
+package com.amv.socioapp.ui.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
