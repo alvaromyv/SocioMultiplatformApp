@@ -103,7 +103,7 @@ private fun ListPaneContent(
                 supportingContent = {
                     Row (modifier = Modifier.fillMaxWidth()) {
                         Text(text = item.categoria.name, modifier = Modifier.weight(1f))
-                        Text(text = item.fechaAntiguedad.toString(), modifier = Modifier.weight(1f), textAlign = TextAlign.End)
+                        Text(text = Socio.formatearFecha(item.fechaAntiguedad), modifier = Modifier.weight(1f), textAlign = TextAlign.End)
                     }
                 },
                 leadingContent = {

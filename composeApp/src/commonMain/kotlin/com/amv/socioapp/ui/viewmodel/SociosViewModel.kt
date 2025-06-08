@@ -9,12 +9,16 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.amv.socioapp.AppEnvironment
-import com.amv.socioapp.data.SociosRepository
+import com.amv.socioapp.network.repository.SociosRepository
 import com.amv.socioapp.model.Socio
 import com.amv.socioapp.network.model.ResponseError
 import com.amv.socioapp.network.model.ResponseSuccess
+import com.amv.socioapp.network.model.SimpleResponse
+import com.amv.socioapp.network.model.SocioRequest
 import com.amv.socioapp.network.model.SociosResponse
+import com.amv.socioapp.network.model.UnSocioResponse
 import kotlinx.coroutines.launch
+import kotlinx.serialization.SerializationException
 
 sealed interface SociosUiState {
     data class Success(val socios: List<Socio>) : SociosUiState
@@ -31,22 +35,104 @@ class SociosViewModel(private val sociosRepository: SociosRepository) : ViewMode
         leerTodos()
     }
 
-    fun leerTodos(){
+    fun leerTodos() {
         viewModelScope.launch {
             sociosUiState = try {
-                when(val response = sociosRepository.obtenerSocios()) {
+                when (val response = sociosRepository.leerTodos()) {
                     is ResponseSuccess -> {
                         when (val content = response.data) {
                             is SociosResponse -> SociosUiState.Success(content.result)
-                            else -> return@launch
+                            else -> throw SerializationException()
                         }
                     }
                     is ResponseError -> SociosUiState.Error(response.error.message)
-                    else -> return@launch
+                    else -> throw SerializationException()
                 }
             } catch (e: Throwable) {
-                throw e
-                // SociosUiState.Exception(e)
+                SociosUiState.Exception(e)
+            }
+        }
+    }
+
+    fun creaUno(socio: SocioRequest) {
+        viewModelScope.launch {
+            try {
+                when (val response = sociosRepository.creaUno(socio)) {
+                    is ResponseSuccess -> {
+                        when (val content = response.data) {
+                            is UnSocioResponse -> leerTodos()
+                            else -> throw SerializationException()
+                        }
+                    }
+                    is ResponseError -> SociosUiState.Error(response.error.message)
+                    else -> throw SerializationException()
+                }
+            } catch (e: Throwable) {
+                SociosUiState.Exception(e)
+            }
+        }
+    }
+
+    fun modificaUno(id: Int, socio: SocioRequest) {
+        viewModelScope.launch {
+            try {
+                when (val response = sociosRepository.actualizaUno(id, socio)) {
+                    is ResponseSuccess -> {
+                        when (val content = response.data) {
+                            is UnSocioResponse -> leerTodos()
+                            else -> throw SerializationException()
+                        }
+                    }
+                    is ResponseError -> SociosUiState.Error(response.error.message)
+                    else -> throw SerializationException()
+                }
+            } catch (e: Throwable) {
+                SociosUiState.Exception(e)
+            }
+        }
+    }
+
+    fun reasignarNumeracion() {
+        viewModelScope.launch {
+            try {
+                when (val response = sociosRepository.reasignarNumeracion()) {
+                    is ResponseSuccess -> {
+                        when (val content = response.data) {
+                            is SimpleResponse -> leerTodos()
+                            else -> throw SerializationException()
+                        }
+                    }
+
+                    is ResponseError -> SociosUiState.Error(response.error.message)
+                }
+            } catch (e: Throwable) {
+                SociosUiState.Exception(e)
+            }
+        }
+    }
+
+    fun borraUno(id: Int) {
+        viewModelScope.launch {
+            try {
+                when (val response = sociosRepository.borraUno(id)) {
+                    is ResponseSuccess -> {
+                        when (val content = response.data) {
+                            is SimpleResponse -> {
+                                if (content.info.numberOfEntriesDeleted == 1) {
+                                    leerTodos()
+                                } else {
+                                    throw SerializationException()
+                                }
+                            }
+                            else -> throw SerializationException()
+                        }
+                    }
+
+                    is ResponseError -> SociosUiState.Error(response.error.message)
+                    else -> throw SerializationException()
+                }
+            } catch (e: Throwable) {
+                SociosUiState.Exception(e)
             }
         }
     }

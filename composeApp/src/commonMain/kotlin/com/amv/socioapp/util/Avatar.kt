@@ -21,7 +21,7 @@ fun UsuarioAvatar(
     iconSize: Dp = 48.dp
 ) {
     AsyncImage(
-        model = imageUrl,
+        model = getBaseUrl()+imageUrl,
         contentDescription = contentDescription,
         contentScale = ContentScale.Crop,
         modifier = modifier

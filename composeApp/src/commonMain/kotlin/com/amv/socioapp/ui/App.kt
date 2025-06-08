@@ -1,12 +1,15 @@
 package com.amv.socioapp.ui
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.amv.socioapp.navigation.AppNavHost
 import com.amv.socioapp.ui.components.SocioNavegationWrapperUI
+import com.amv.socioapp.ui.screens.LoginScreen
 import com.amv.socioapp.ui.theme.SocioAppTheme
 import com.amv.socioapp.ui.viewmodel.AuthViewModel
 import com.amv.socioapp.ui.viewmodel.SociosViewModel
@@ -21,15 +24,26 @@ fun App(
     usuariosViewModel: UsuariosViewModel = viewModel(factory = UsuariosViewModel.Factory),
     authViewModel: AuthViewModel = viewModel(factory = AuthViewModel.Factory)
 ) {
-    SocioAppTheme {
+    MaterialTheme {
         val navController = rememberNavController()
+        val haySesionValida = authViewModel.sesionValida.collectAsState().value
 
-        SocioNavegationWrapperUI(navController) {
-            AppNavHost(navController, sociosViewModel)
+        if(haySesionValida) {
+            SocioNavegationWrapperUI(navController) {
+                AppNavHost(navController, sociosViewModel)
+            }
+            LaunchedEffect(navController) {
+                onNavHostReady(navController)
+            }
+        } else {
+            LoginScreen(authViewModel)
         }
 
-        LaunchedEffect(navController) {
-            onNavHostReady(navController)
-        }
+//        SocioNavegationWrapperUI(navController) {
+//            AppNavHost(navController, sociosViewModel)
+//        }
+//        LaunchedEffect(navController) {
+//            onNavHostReady(navController)
+//        }
     }
 }

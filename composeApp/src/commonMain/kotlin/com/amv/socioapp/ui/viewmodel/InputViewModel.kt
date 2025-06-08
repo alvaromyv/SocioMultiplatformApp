@@ -1,5 +1,6 @@
 package com.amv.socioapp.ui.viewmodel
 
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,8 +9,13 @@ import com.amv.socioapp.model.Categoria
 import com.amv.socioapp.model.Rol
 
 class InputViewModel : ViewModel() {
+    /////////////////////////////////////// CONSTANTES /////////////////////////////////////////////
+    companion object {
+        private val EMAIL_REGEX = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")
+    }
+
     /////////////////////////////////////// ESTADOS ////////////////////////////////////////////////
-    private data class UsuarioFormState(
+    data class UsuarioFormState(
         val nombre: String = "",
         val apellidos: String? = "",
         val telefono: String? = "",
@@ -18,17 +24,36 @@ class InputViewModel : ViewModel() {
         val rol: Rol = Rol.USUARIO
     )
 
-    private data class SocioFormState(
+    data class SocioFormState(
         val categoria: Categoria = Categoria.ADULTO,
         val abonado: Boolean = false,
         val usuarioId: Int? = null
     )
 
-    private var usuarioFormState by mutableStateOf(UsuarioFormState())
+    var usuarioFormState by mutableStateOf(UsuarioFormState())
 
-    private var socioFormState by mutableStateOf(SocioFormState())
+    var socioFormState by mutableStateOf(SocioFormState())
+
+    var esPasswordVisible by mutableStateOf(false)
+        private set
 
     ////////////////////////////////////// VALIDACIONES ///////////////////////////////////////////////
+    val esEmailErroneo by derivedStateOf {
+        if (usuarioFormState.email.isNotEmpty()) {
+            // El email se considera erroneo sí no encaja con la cadena de un correo por defecto
+            !EMAIL_REGEX.matches(usuarioFormState.email)
+        } else {
+            false
+        }
+    }
+
+    val esFormularioLoginValido by derivedStateOf {
+        if (usuarioFormState.email.isEmpty() || usuarioFormState.password.isEmpty()){
+            false
+        }else{
+            !esEmailErroneo// Comprobamos que el correo sea válido, la contraseña ya se comprueba si está vacía o no
+        }
+    }
 
     ////////////////////////////////////// ACTUALIZAR //////////////////////////////////////////////
     fun actualizarNombre(nombre: String) {
@@ -65,6 +90,10 @@ class InputViewModel : ViewModel() {
 
     fun actualizarUsuarioId(id: Int?) {
         socioFormState = socioFormState.copy(usuarioId = id)
+    }
+
+    fun actualizarPasswordVisible() {
+        esPasswordVisible = !esPasswordVisible
     }
 
     ////////////////////////////////////// FUNCIONES ///////////////////////////////////////////////

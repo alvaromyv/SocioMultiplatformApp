@@ -1,6 +1,12 @@
 package com.amv.socioapp.data
 
 import com.amv.socioapp.network.NetworkUtils.ktorfit
+import com.amv.socioapp.network.repository.AuthRepository
+import com.amv.socioapp.network.repository.NetworkAuthRepository
+import com.amv.socioapp.network.repository.NetworkSociosRepository
+import com.amv.socioapp.network.repository.NetworkUsuariosRepository
+import com.amv.socioapp.network.repository.SociosRepository
+import com.amv.socioapp.network.repository.UsuariosRepository
 import com.amv.socioapp.network.service.AuthService
 import com.amv.socioapp.network.service.SocioServices
 import com.amv.socioapp.network.service.UsuarioService
@@ -23,7 +29,11 @@ object DefaultAppContainer : AppContainer {
     override val sessionManager: SessionManager = SessionManager
 
     override val sociosRepository: SociosRepository by lazy { NetworkSociosRepository(servicioSocios) }
-    override val usuariosRepository: UsuariosRepository by lazy { NetworkUsuariosRepository(servicioUsuarios) }
+    override val usuariosRepository: UsuariosRepository by lazy {
+        NetworkUsuariosRepository(
+            servicioUsuarios
+        )
+    }
     override val authRepository: AuthRepository by lazy { NetworkAuthRepository(servicioAuth) }
 }
 

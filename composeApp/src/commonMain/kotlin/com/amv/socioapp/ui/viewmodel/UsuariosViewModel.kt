@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.amv.socioapp.AppEnvironment
-import com.amv.socioapp.data.UsuariosRepository
+import com.amv.socioapp.network.repository.UsuariosRepository
 import com.amv.socioapp.model.Usuario
 import com.amv.socioapp.network.model.ResponseError
 import com.amv.socioapp.network.model.ResponseSuccess

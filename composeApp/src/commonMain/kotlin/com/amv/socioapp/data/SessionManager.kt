@@ -20,6 +20,7 @@ object SessionManager {
         val milisegundosExpiracionToken = Clock.System.now().toEpochMilliseconds() + (expiresIn * 1000)
         settings.putString(BEARER_TOKEN, token)
         settings.putLong(EXPIRATION_TIME, milisegundosExpiracionToken)
+        _sesion.value = true
     }
 
     fun cerrarSesion() {

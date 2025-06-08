@@ -24,7 +24,7 @@ fun SocioTopAppBar(
     onActionClick: () -> Unit = {},
 ) {
     CenterAlignedTopAppBar(
-        title = { Text(text = title) },
+        title = { Text(text = title, style = MaterialTheme.typography.titleLarge) },
         navigationIcon = {
             IconButton(onClick = onNavigationClick) {
                 Icon(

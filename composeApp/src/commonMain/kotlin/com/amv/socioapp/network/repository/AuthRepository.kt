@@ -1,4 +1,4 @@
-package com.amv.socioapp.data
+package com.amv.socioapp.network.repository
 
 import com.amv.socioapp.network.model.AuthRequest
 import com.amv.socioapp.network.model.BaseResponse

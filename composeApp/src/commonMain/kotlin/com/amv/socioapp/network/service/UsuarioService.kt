@@ -9,6 +9,7 @@ import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.PATCH
 import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.Path
+import de.jensklingenberg.ktorfit.http.Query
 
 interface UsuarioService {
     @GET("usuarios/todos")
@@ -16,6 +17,9 @@ interface UsuarioService {
 
     @GET("usuarios")
     suspend fun obtenerPerfil(): BaseResponse
+
+    @GET("buscar")
+    suspend fun busca(@Query("q") texto: String): BaseResponse
 
     @POST("usuarios/subir-avatar/{id}")
     suspend fun subirAvatar(@Path("id") id: Int): BaseResponse

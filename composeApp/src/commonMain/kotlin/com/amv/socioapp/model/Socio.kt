@@ -5,6 +5,9 @@ import com.amv.socioapp.util.MyParcelize
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
+import kotlinx.datetime.format.FormatStringsInDatetimeFormats
+import kotlinx.datetime.format.byUnicodePattern
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -26,6 +29,17 @@ data class Socio(
 
     val fechaAntiguedad: LocalDateTime
         get() = Instant.parse(_fechaAntiguedad).toLocalDateTime(TimeZone.UTC)
+
+    companion object{
+        @OptIn(FormatStringsInDatetimeFormats::class)
+        fun formatearFecha(fecha: LocalDateTime): String {
+            return try {
+                fecha.format(LocalDateTime.Format { byUnicodePattern("dd/MM/yyyy") })
+            } catch (e: Exception) {
+                "Desconocida"
+            }
+        }
+    }
 
 }
 

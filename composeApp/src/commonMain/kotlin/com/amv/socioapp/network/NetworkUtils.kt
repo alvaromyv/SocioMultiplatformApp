@@ -1,4 +1,5 @@
 package com.amv.socioapp.network
+import com.amv.socioapp.data.SessionManager
 import com.amv.socioapp.network.model.AuthResponse
 import com.amv.socioapp.network.model.BaseResponse
 import com.amv.socioapp.network.model.ContentResponse
@@ -9,6 +10,7 @@ import com.amv.socioapp.network.model.SociosResponse
 import com.amv.socioapp.network.model.UnSocioResponse
 import com.amv.socioapp.network.model.UnUsuarioResponse
 import com.amv.socioapp.network.model.UsuariosResponse
+import com.amv.socioapp.util.getBaseUrl
 import de.jensklingenberg.ktorfit.Ktorfit
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.auth.Auth
@@ -21,9 +23,7 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 
 object NetworkUtils {
-    private const val BASE_URL =
-        //"http://10.0.2.2:3000/"
-        "http://localhost:3000/"
+    private val BASE_URL = getBaseUrl()
 
     val httpClient = HttpClient {
         install(ContentNegotiation) {
@@ -51,6 +51,7 @@ object NetworkUtils {
             bearer {
                 loadTokens {
                     BearerTokens("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyb290QGdtYWlsLmNvbSIsImlhdCI6MTc0OTMxODk4NCwiZXhwIjoxNzQ5NTM0OTg0fQ.HTZsuz2l1G0jKAgRQuylXitFxCFrOX5jh-ZJJpj-03E", null)
+                    // BearerTokens(SessionManager.obtenerToken().toString(), null)
                 }
             }
         }

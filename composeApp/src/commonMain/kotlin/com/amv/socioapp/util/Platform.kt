@@ -10,3 +10,5 @@ expect interface MyParcelable
 @Target(AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.SOURCE)
 expect annotation class MyIgnoredOnParcel()
+
+expect fun getBaseUrl(): String
