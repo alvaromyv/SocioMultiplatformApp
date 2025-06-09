@@ -40,11 +40,17 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.window.core.layout.WindowWidthSizeClass
+import com.amv.socioapp.data.SessionManager
+import com.amv.socioapp.navigation.Formulario
 import com.amv.socioapp.navigation.TopLevelDestination
+import com.amv.socioapp.ui.viewmodel.SociosViewModel
+import com.amv.socioapp.ui.viewmodel.UsuariosViewModel
 
 @Composable
 fun SocioNavegationWrapperUI(
     navController: NavController,
+    sociosViewModel: SociosViewModel,
+    usuariosViewModel: UsuariosViewModel,
     socioNavHost: @Composable () -> Unit = {}
 ) {
     val windowAdaptiveInfo = currentWindowAdaptiveInfo()
@@ -81,7 +87,7 @@ fun SocioNavegationWrapperUI(
             }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = {}) {
+            FloatingActionButton(onClick = { navController.navigate(Formulario(false)) }) {
                 Icon(imageVector = Icons.Filled.Add, contentDescription = null)
             }
         }
@@ -120,8 +126,11 @@ fun SocioNavegationWrapperUI(
                         actionIcon = Icons.Filled.Settings,
                         actionIconContentDescription = "Ajustes",
                         onNavigationClick = { },
-                        onActualizarClick = { },
-                        onActionClick = { }
+                        onActualizarClick = {
+                            sociosViewModel.leerTodos()
+                            usuariosViewModel.leerTodos()
+                        },
+                        onActionClick = { SessionManager.cerrarSesion() }
                     )
                 }
 

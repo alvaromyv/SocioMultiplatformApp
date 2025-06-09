@@ -20,17 +20,17 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Preview
 fun App(
     onNavHostReady: suspend (NavController) -> Unit = {},
-    sociosViewModel: SociosViewModel = viewModel(factory = SociosViewModel.Factory),
-    usuariosViewModel: UsuariosViewModel = viewModel(factory = UsuariosViewModel.Factory),
     authViewModel: AuthViewModel = viewModel(factory = AuthViewModel.Factory)
 ) {
-    MaterialTheme {
+    SocioAppTheme {
         val navController = rememberNavController()
         val haySesionValida = authViewModel.sesionValida.collectAsState().value
 
         if(haySesionValida) {
-            SocioNavegationWrapperUI(navController) {
-                AppNavHost(navController, sociosViewModel)
+            val sociosViewModel: SociosViewModel = viewModel(factory = SociosViewModel.Factory)
+            val usuariosViewModel: UsuariosViewModel = viewModel(factory = UsuariosViewModel.Factory)
+            SocioNavegationWrapperUI(navController, sociosViewModel, usuariosViewModel) {
+                AppNavHost(navController, sociosViewModel, usuariosViewModel)
             }
             LaunchedEffect(navController) {
                 onNavHostReady(navController)
@@ -38,12 +38,5 @@ fun App(
         } else {
             LoginScreen(authViewModel)
         }
-
-//        SocioNavegationWrapperUI(navController) {
-//            AppNavHost(navController, sociosViewModel)
-//        }
-//        LaunchedEffect(navController) {
-//            onNavHostReady(navController)
-//        }
     }
 }

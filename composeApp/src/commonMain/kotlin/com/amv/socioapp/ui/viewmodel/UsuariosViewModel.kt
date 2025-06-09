@@ -15,6 +15,7 @@ import com.amv.socioapp.network.model.ResponseError
 import com.amv.socioapp.network.model.ResponseSuccess
 import com.amv.socioapp.network.model.UsuariosResponse
 import kotlinx.coroutines.launch
+import kotlinx.serialization.SerializationException
 
 sealed interface UsuariosUiState {
     data class Success(val usuarios: List<Usuario>) : UsuariosUiState
@@ -33,20 +34,20 @@ class UsuariosViewModel(private val usuariosRepository: UsuariosRepository) : Vi
 
     fun leerTodos(){
         viewModelScope.launch {
+            usuariosUiState = UsuariosUiState.Loading
             usuariosUiState = try {
                 when(val response = usuariosRepository.obtenerUsuarios()) {
                     is ResponseSuccess -> {
                         when (val content = response.data) {
                             is UsuariosResponse -> UsuariosUiState.Success(content.result)
-                            else -> return@launch
+                            else -> throw SerializationException()
                         }
                     }
                     is ResponseError -> UsuariosUiState.Error(response.error.message)
-                    else -> return@launch
+                    else -> throw SerializationException()
                 }
             } catch (e: Throwable) {
-                throw e
-                // SociosUiState.Exception(e)
+                UsuariosUiState.Exception(e)
             }
         }
     }

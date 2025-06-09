@@ -37,6 +37,7 @@ class SociosViewModel(private val sociosRepository: SociosRepository) : ViewMode
 
     fun leerTodos() {
         viewModelScope.launch {
+            sociosUiState = SociosUiState.Loading
             sociosUiState = try {
                 when (val response = sociosRepository.leerTodos()) {
                     is ResponseSuccess -> {
@@ -49,6 +50,7 @@ class SociosViewModel(private val sociosRepository: SociosRepository) : ViewMode
                     else -> throw SerializationException()
                 }
             } catch (e: Throwable) {
+                throw e
                 SociosUiState.Exception(e)
             }
         }

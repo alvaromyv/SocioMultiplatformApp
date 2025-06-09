@@ -72,6 +72,7 @@ class AuthViewModel(private val authRepository: AuthRepository, private val sess
                     else -> throw SerializationException()
                 }
             } catch (e: Throwable) {
+                throw e
                 AuthUiState.Exception(e)
             }
         }

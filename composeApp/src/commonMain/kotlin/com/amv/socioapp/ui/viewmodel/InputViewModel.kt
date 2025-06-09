@@ -12,10 +12,13 @@ class InputViewModel : ViewModel() {
     /////////////////////////////////////// CONSTANTES /////////////////////////////////////////////
     companion object {
         private val EMAIL_REGEX = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")
+        private val PHONE_REGEX = Regex("^[0-9]{9}$")
+        private const val MIN_PASSWORD_LENGTH = 8
     }
 
     /////////////////////////////////////// ESTADOS ////////////////////////////////////////////////
     data class UsuarioFormState(
+        val avatar: String? = null,
         val nombre: String = "",
         val apellidos: String? = "",
         val telefono: String? = "",
@@ -47,6 +50,15 @@ class InputViewModel : ViewModel() {
         }
     }
 
+    val esTelefonoErroneo by derivedStateOf {
+        if (usuarioFormState.telefono.isNullOrEmpty()) {
+            false
+        } else {
+            // El telefono se considera erroneo sí no encaja con la cadena de un telefono por defecto
+            !PHONE_REGEX.matches(usuarioFormState.telefono!!)
+        }
+    }
+
     val esFormularioLoginValido by derivedStateOf {
         if (usuarioFormState.email.isEmpty() || usuarioFormState.password.isEmpty()){
             false
@@ -56,6 +68,10 @@ class InputViewModel : ViewModel() {
     }
 
     ////////////////////////////////////// ACTUALIZAR //////////////////////////////////////////////
+    fun actualizarAvatar(avatar: String?) {
+        usuarioFormState = usuarioFormState.copy(avatar = avatar)
+    }
+
     fun actualizarNombre(nombre: String) {
         usuarioFormState = usuarioFormState.copy(nombre = nombre)
     }
@@ -97,7 +113,7 @@ class InputViewModel : ViewModel() {
     }
 
     ////////////////////////////////////// FUNCIONES ///////////////////////////////////////////////
-    fun reiniciar() {
+    fun reiniciarValores() {
         usuarioFormState = UsuarioFormState()
         socioFormState = SocioFormState()
     }

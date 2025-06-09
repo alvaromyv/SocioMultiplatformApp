@@ -17,6 +17,9 @@ import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
@@ -50,10 +53,13 @@ object NetworkUtils {
         install(Auth) {
             bearer {
                 loadTokens {
-                    BearerTokens("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyb290QGdtYWlsLmNvbSIsImlhdCI6MTc0OTMxODk4NCwiZXhwIjoxNzQ5NTM0OTg0fQ.HTZsuz2l1G0jKAgRQuylXitFxCFrOX5jh-ZJJpj-03E", null)
-                    // BearerTokens(SessionManager.obtenerToken().toString(), null)
+                    //BearerTokens("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyb290QGdtYWlsLmNvbSIsImlhdCI6MTc0OTMxODk4NCwiZXhwIjoxNzQ5NTM0OTg0fQ.HTZsuz2l1G0jKAgRQuylXitFxCFrOX5jh-ZJJpj-03E", null)
+                    BearerTokens(SessionManager.obtenerToken().toString(), null)
                 }
             }
+        }
+        defaultRequest {
+            contentType(ContentType.Application.Json)
         }
     }
     val ktorfit: Ktorfit = Ktorfit.Builder()

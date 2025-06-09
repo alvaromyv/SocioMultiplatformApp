@@ -10,6 +10,9 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,6 +21,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.amv.socioapp.model.Categoria
 
 @Composable
 fun MiTextField(
@@ -115,7 +119,7 @@ fun MiCheckBox(
     valor: Boolean,
     label: String,
     onValorChange: (Boolean) -> Unit,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     Checkbox(
         checked = valor,
@@ -133,7 +137,7 @@ fun MiButton(
     accion: String,
     onClick: () -> Unit,
     activado: Boolean = true,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     Button(
         onClick = onClick,
@@ -145,3 +149,30 @@ fun MiButton(
     }
 }
 
+
+@Composable
+fun SeleccionarCategoria(
+    categoria: Categoria,
+    onCategoriaChange: (Categoria) -> Unit,
+    modifier: Modifier
+) {
+    val categorias = Categoria.entries.toList()
+    var seleccionado = categorias.indexOf(categoria)
+
+    SingleChoiceSegmentedButtonRow(modifier = modifier) {
+        categorias.forEachIndexed { indice, categoria ->
+            SegmentedButton(
+                shape = SegmentedButtonDefaults.itemShape(
+                    index = indice,
+                    count = categorias.size
+                ),
+                onClick = {
+                    seleccionado = indice
+                    onCategoriaChange(categoria)
+                },
+                selected = indice == seleccionado,
+                label = { Text(categoria.toString()) }
+            )
+        }
+    }
+}

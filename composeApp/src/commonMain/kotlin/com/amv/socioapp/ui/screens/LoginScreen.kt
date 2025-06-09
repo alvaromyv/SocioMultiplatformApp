@@ -16,10 +16,12 @@ import androidx.compose.foundation.layout.requiredWidthIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -50,51 +52,39 @@ fun LoginScreen(
     inputViewModel: InputViewModel = remember { InputViewModel() },
     onLoginTry: (AuthRequest) -> Unit = { credenciales -> authViewModel.iniciarSesion(credenciales) }
 ) {
-    when (currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass) {
+    LoginContent(
+        inputViewModel = inputViewModel,
+        onLoginTry = onLoginTry,
+    )
+    /*when (currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass) {
         WindowWidthSizeClass.EXPANDED -> LoginContentExpanded(inputViewModel, onLoginTry)
         WindowWidthSizeClass.MEDIUM -> LoginContentMedium(inputViewModel, onLoginTry)
         WindowWidthSizeClass.COMPACT -> LoginContentCompact(inputViewModel, onLoginTry)
         else -> LoginContentCompact(inputViewModel, onLoginTry)
-    }
+    }*/
 }
 
 @Composable
-private fun LoginContentBase(
+private fun LoginContent(
     inputViewModel: InputViewModel,
     onLoginTry: (AuthRequest) -> Unit,
     modifier: Modifier = Modifier,
-    imageHeight: Dp = 200.dp,
-    showImage: Boolean = true
 ) {
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         ElevatedCard(
-            modifier = Modifier
-                .then(
-                    if (modifier == Modifier.fillMaxWidth()) Modifier.fillMaxWidth(0.9f)
-                    else modifier
-                )
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            modifier = Modifier.wrapContentSize()
         ) {
             Column(
                 modifier = Modifier
                     .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                AsyncImage(
-                    model = getBaseUrl() + "uploads/logo-app.jpg",
-                    contentDescription = null,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(imageHeight)
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
                 MiLabel(
                     text = "INICIAR SESIÓN",
                     style = MaterialTheme.typography.headlineSmall,
@@ -111,8 +101,6 @@ private fun LoginContentBase(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
                 MiTextField(
                     label = "Contraseña",
                     valor = inputViewModel.usuarioFormState.password,
@@ -126,8 +114,6 @@ private fun LoginContentBase(
                     enabled = !inputViewModel.esEmailErroneo,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 )
-
-                Spacer(modifier = Modifier.height(24.dp))
 
                 MiButton(
                     accion = "Acceder",
@@ -145,66 +131,4 @@ private fun LoginContentBase(
             }
         }
     }
-}
-
-@Composable
-fun LoginContentExpanded(
-    inputViewModel: InputViewModel,
-    onLoginTry: (AuthRequest) -> Unit
-) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .heightIn(min = 400.dp)
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            AsyncImage(
-                model = getBaseUrl() + "uploads/logo-app.jpg",
-                contentDescription = null,
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .weight(1f)
-                    .height(400.dp),
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-
-            LoginContentBase(
-                inputViewModel = inputViewModel,
-                onLoginTry = onLoginTry,
-                modifier = Modifier
-                    .weight(1f),
-                imageHeight = 0.dp,
-                showImage = false
-            )
-        }
-    }
-}
-
-@Composable
-fun LoginContentMedium(
-    inputViewModel: InputViewModel,
-    onLoginTry: (AuthRequest) -> Unit
-) {
-    LoginContentBase(
-        inputViewModel = inputViewModel,
-        onLoginTry = onLoginTry,
-        modifier = Modifier.fillMaxWidth(0.6f),
-        imageHeight = 200.dp // Altura reducida para pantallas medianas
-    )
-}
-
-@Composable
-fun LoginContentCompact(
-    inputViewModel: InputViewModel,
-    onLoginTry: (AuthRequest) -> Unit
-) {
-    LoginContentBase(
-        inputViewModel = inputViewModel,
-        onLoginTry = onLoginTry,
-        modifier = Modifier.fillMaxWidth(),
-        imageHeight = 150.dp // Altura más pequeña para móviles
-    )
 }
