@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.unit.dp
 import com.amv.socioapp.model.Usuario
-import com.amv.socioapp.util.UsuarioAvatar
+import com.amv.socioapp.util.PerfilAvatar
 import kotlinx.coroutines.launch
 
 @Composable
@@ -92,8 +92,8 @@ private fun ListPaneContent(
 //                    }
                 },
                 leadingContent = {
-                    UsuarioAvatar(
-                        imageUrl = item.avatarUrl,
+                    PerfilAvatar(
+                        avatarLink = item.avatarUrl,
                         contentDescription = item.obtenerNombreCompleto()
                     )
                 },

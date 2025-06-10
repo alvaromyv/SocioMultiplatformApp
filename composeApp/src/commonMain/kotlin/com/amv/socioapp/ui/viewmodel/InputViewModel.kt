@@ -7,6 +7,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.amv.socioapp.model.Categoria
 import com.amv.socioapp.model.Rol
+import io.github.vinceglb.filekit.PlatformFile
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlinx.serialization.SerialName
 
 class InputViewModel : ViewModel() {
     /////////////////////////////////////// CONSTANTES /////////////////////////////////////////////
@@ -18,7 +24,7 @@ class InputViewModel : ViewModel() {
 
     /////////////////////////////////////// ESTADOS ////////////////////////////////////////////////
     data class UsuarioFormState(
-        val avatar: String? = null,
+        val avatar: PlatformFile? = null,
         val nombre: String = "",
         val apellidos: String? = "",
         val telefono: String? = "",
@@ -29,6 +35,8 @@ class InputViewModel : ViewModel() {
 
     data class SocioFormState(
         val categoria: Categoria = Categoria.ADULTO,
+        val fechaNacimiento: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+        val fechaAntiguedad: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
         val abonado: Boolean = false,
         val usuarioId: Int? = null
     )
@@ -68,7 +76,7 @@ class InputViewModel : ViewModel() {
     }
 
     ////////////////////////////////////// ACTUALIZAR //////////////////////////////////////////////
-    fun actualizarAvatar(avatar: String?) {
+    fun actualizarAvatar(avatar: PlatformFile?) {
         usuarioFormState = usuarioFormState.copy(avatar = avatar)
     }
 
@@ -98,6 +106,14 @@ class InputViewModel : ViewModel() {
 
     fun actualizarCategoria(categoria: Categoria) {
         socioFormState = socioFormState.copy(categoria = categoria)
+    }
+
+    fun actualizarFechaNacimiento(fechaNacimiento: LocalDateTime) {
+        socioFormState = socioFormState.copy(fechaNacimiento = fechaNacimiento)
+    }
+
+    fun actualizarFechaAntiguedad(fechaAntiguedad: LocalDateTime) {
+        socioFormState = socioFormState.copy(fechaAntiguedad = fechaAntiguedad)
     }
 
     fun actualizarAbonado(abonado: Boolean) {

@@ -5,7 +5,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
@@ -24,11 +27,17 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.amv.socioapp.ui.components.MiCheckBox
 import com.amv.socioapp.ui.components.MiTextField
-import com.amv.socioapp.ui.components.SeleccionarCategoria
+import com.amv.socioapp.ui.components.MiTextFieldFecha
+import com.amv.socioapp.ui.components.SeleccionButtonRow
 import com.amv.socioapp.ui.viewmodel.InputViewModel
+import com.amv.socioapp.util.PerfilAvatar
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
+import io.github.vinceglb.filekit.nameWithoutExtension
+import io.github.vinceglb.filekit.readBytes
+import io.ktor.util.PlatformUtils
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun FormularioScreen(
@@ -49,29 +58,33 @@ fun FormularioScreen(
 private fun FormularioContent(
     vm: InputViewModel,
 ) {
+    val scrollState = rememberScrollState()
+
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
     ) {
         val launcher = rememberFilePickerLauncher(
             type = FileKitType.Image
-        ) { file ->
-            vm.actualizarAvatar(file.toString())
-        }
+        ) { file -> vm.actualizarAvatar(file) }
 
         AsyncImage(
             model = vm.usuarioFormState.avatar,
             contentDescription = null,
             modifier = Modifier
-                .size(128.dp)
+                .wrapContentSize()
                 .clickable { launcher.launch() }
         )
+
+        // Text(vm.usuarioFormState.avatar.toString())
 
         MiTextField(
             label = "Nombre",
             valor = vm.usuarioFormState.nombre,
             hayError = false,
             mensajeError = "",
-            onValorChange = { vm.actualizarNombre(it) },
+            onValorChange = vm::actualizarNombre,
             modifier = Modifier.fillMaxWidth(),
             leadingIcon = Icons.Filled.Person
         )
@@ -81,7 +94,7 @@ private fun FormularioContent(
             valor = vm.usuarioFormState.apellidos!!,
             hayError = false,
             mensajeError = "",
-            onValorChange = { vm.actualizarApellidos(it) },
+            onValorChange = vm::actualizarApellidos,
             modifier = Modifier.fillMaxWidth(),
         )
 
@@ -90,7 +103,7 @@ private fun FormularioContent(
             valor = vm.usuarioFormState.telefono!!,
             hayError = vm.esTelefonoErroneo,
             mensajeError = "",
-            onValorChange = { vm.actualizarTelefono(it) },
+            onValorChange = vm::actualizarTelefono,
             modifier = Modifier.fillMaxWidth(),
             leadingIcon = Icons.Filled.Phone,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
@@ -101,7 +114,7 @@ private fun FormularioContent(
             valor = vm.usuarioFormState.email,
             hayError = vm.esEmailErroneo,
             mensajeError = "",
-            onValorChange = { vm.actualizarEmail(it) },
+            onValorChange = vm::actualizarEmail,
             modifier = Modifier.fillMaxWidth(),
             leadingIcon = Icons.Filled.Email,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -120,18 +133,39 @@ private fun FormularioContent(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         )
 
-        // ROL
+        SeleccionButtonRow(
+            valor = vm.usuarioFormState.rol,
+            onValorChange = vm::actualizarRol,
+            modifier = Modifier.fillMaxWidth()
+        )
 
-        SeleccionarCategoria(
-            categoria = vm.socioFormState.categoria,
-            onCategoriaChange = { vm.actualizarCategoria(it) },
+        SeleccionButtonRow(
+            valor = vm.socioFormState.categoria,
+            onValorChange = vm::actualizarCategoria,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        MiTextFieldFecha(
+            label = "Fecha de nacimiento",
+            fecha = vm.socioFormState.fechaNacimiento,
+            hayError = false,
+            onFechaChange = vm::actualizarFechaNacimiento,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        MiTextFieldFecha(
+            label = "Fecha de antiguedad",
+            fecha = vm.socioFormState.fechaAntiguedad,
+            hayError = false,
+            onFechaChange = vm::actualizarFechaAntiguedad,
             modifier = Modifier.fillMaxWidth()
         )
 
         MiCheckBox(
             valor = vm.socioFormState.abonado,
             label = "Abonado",
-            onValorChange = { vm.actualizarAbonado(it) },
+            onValorChange = vm::actualizarAbonado,
+            modifier = Modifier.fillMaxWidth()
         )
 
         // USUARIO ID

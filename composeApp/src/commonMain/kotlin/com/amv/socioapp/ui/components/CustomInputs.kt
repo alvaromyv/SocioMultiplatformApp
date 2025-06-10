@@ -3,10 +3,15 @@ package com.amv.socioapp.ui.components
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DisplayMode
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -14,14 +19,24 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.amv.socioapp.model.Categoria
+import com.amv.socioapp.model.Socio
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun MiTextField(
@@ -37,7 +52,7 @@ fun MiTextField(
     onLeadingIconClick: () -> Unit = { },
     onTrailingIconClick: () -> Unit = { },
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    enabled: Boolean = true,
+    readOnly: Boolean = false,
     maxLines: Int = 1,
 ) {
     OutlinedTextField(
@@ -73,7 +88,7 @@ fun MiTextField(
             } else null,
         keyboardOptions = keyboardOptions,
         visualTransformation = if (esVisible) VisualTransformation.None else PasswordVisualTransformation(),
-        enabled = enabled,
+        readOnly = readOnly,
         maxLines = maxLines,
         shape = RoundedCornerShape(10.dp),
     )
@@ -149,30 +164,89 @@ fun MiButton(
     }
 }
 
-
 @Composable
-fun SeleccionarCategoria(
-    categoria: Categoria,
-    onCategoriaChange: (Categoria) -> Unit,
+inline fun <reified T> SeleccionButtonRow(
+    valor: T,
+    crossinline onValorChange: (T) -> Unit,
     modifier: Modifier
-) {
-    val categorias = Categoria.entries.toList()
-    var seleccionado = categorias.indexOf(categoria)
+) where T : Enum<T> {
+    val elementos = enumValues<T>().toList()
+    var seleccionado = elementos.indexOf(valor)
 
     SingleChoiceSegmentedButtonRow(modifier = modifier) {
-        categorias.forEachIndexed { indice, categoria ->
+        elementos.forEachIndexed { indice, valor ->
             SegmentedButton(
                 shape = SegmentedButtonDefaults.itemShape(
                     index = indice,
-                    count = categorias.size
+                    count = elementos.size
                 ),
                 onClick = {
                     seleccionado = indice
-                    onCategoriaChange(categoria)
+                    onValorChange(valor)
                 },
                 selected = indice == seleccionado,
-                label = { Text(categoria.toString()) }
+                label = { Text(valor.toString()) }
             )
         }
+    }
+}
+
+@Composable
+fun MiTextFieldFecha(
+    label: String,
+    fecha: LocalDateTime,
+    hayError: Boolean,
+    onFechaChange: (LocalDateTime) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var mostrarDialogo by remember { mutableStateOf(false) }
+
+    MiTextField(
+        label = label,
+        valor = Socio.formatearFecha(fecha),
+        leadingIcon = Icons.Filled.DateRange,
+        onLeadingIconClick = { mostrarDialogo = true },
+        readOnly = true,
+        onValorChange = {},
+        hayError = hayError,
+        mensajeError = "",
+        modifier = modifier
+    )
+
+    if (mostrarDialogo) {
+        SeleccionarFecha(onSeleccionarFecha = { milisegundos ->
+            milisegundos?.let {
+                onFechaChange(Instant.fromEpochMilliseconds(milisegundos)
+                    .toLocalDateTime(TimeZone.currentSystemDefault()))
+            }
+        }, onRechazar = { mostrarDialogo = false })
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SeleccionarFecha(
+    onSeleccionarFecha: (Long?) -> Unit,
+    onRechazar: () -> Unit
+) {
+    val estadoDatePicker = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
+
+    DatePickerDialog(
+        onDismissRequest = onRechazar,
+        confirmButton = {
+            TextButton(onClick = {
+                onSeleccionarFecha(estadoDatePicker.selectedDateMillis)
+                onRechazar()
+            }) {
+                Text("Seleccionar")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onRechazar) {
+                Text(text = "Cancelar")
+            }
+        },
+    ) {
+        DatePicker(state = estadoDatePicker)
     }
 }

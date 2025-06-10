@@ -16,7 +16,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
@@ -44,7 +43,7 @@ import com.amv.socioapp.ui.components.MiButton
 import com.amv.socioapp.ui.components.MiDialogoConfirmacion
 import com.amv.socioapp.ui.viewmodel.SociosUiState
 import com.amv.socioapp.ui.viewmodel.SociosViewModel
-import com.amv.socioapp.util.UsuarioAvatar
+import com.amv.socioapp.util.PerfilAvatar
 import kotlinx.coroutines.launch
 
 
@@ -126,8 +125,8 @@ private fun ListPaneContent(
                     }
                 },
                 leadingContent = {
-                    UsuarioAvatar(
-                        imageUrl = item.usuario.avatarUrl,
+                    PerfilAvatar(
+                        avatarLink = item.usuario.avatarUrl,
                         contentDescription = item.usuario.obtenerNombreCompleto()
                     )
                 },
@@ -162,8 +161,8 @@ private fun DetailPaneContent(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(bottom = 16.dp)
             ) {
-                UsuarioAvatar(
-                    imageUrl = socio.usuario.avatarUrl,
+                PerfilAvatar(
+                    avatarLink = socio.usuario.avatarUrl,
                     contentDescription = socio.usuario.obtenerNombreCompleto(),
                     iconSize = 128.dp
                 )

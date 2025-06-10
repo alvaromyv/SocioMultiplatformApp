@@ -7,6 +7,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil3.ImageLoader
+import coil3.compose.setSingletonImageLoaderFactory
 import com.amv.socioapp.navigation.AppNavHost
 import com.amv.socioapp.ui.components.SocioNavegationWrapperUI
 import com.amv.socioapp.ui.screens.LoginScreen
@@ -14,6 +16,7 @@ import com.amv.socioapp.ui.theme.SocioAppTheme
 import com.amv.socioapp.ui.viewmodel.AuthViewModel
 import com.amv.socioapp.ui.viewmodel.SociosViewModel
 import com.amv.socioapp.ui.viewmodel.UsuariosViewModel
+import io.github.vinceglb.filekit.coil.addPlatformFileSupport
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -22,6 +25,14 @@ fun App(
     onNavHostReady: suspend (NavController) -> Unit = {},
     authViewModel: AuthViewModel = viewModel(factory = AuthViewModel.Factory)
 ) {
+    setSingletonImageLoaderFactory { context ->
+        ImageLoader.Builder(context)
+            .components {
+                addPlatformFileSupport()
+            }
+            .build()
+    }
+
     SocioAppTheme {
         val navController = rememberNavController()
         val haySesionValida = authViewModel.sesionValida.collectAsState().value

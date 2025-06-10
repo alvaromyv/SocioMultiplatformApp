@@ -80,7 +80,7 @@ kotlin {
             implementation(libs.multiplatform.settings.no.arg)
             implementation(libs.lifecycle.viewmodel.compose)
             implementation(libs.filekit.core)
-            // implementation(libs.filekit.dialogs)
+            implementation(libs.filekit.coil)
             implementation(libs.filekit.dialogs.compose)
             ////////////////////////////////////////////////////////////////////////////////////////
         }
