@@ -1,5 +1,6 @@
 package com.amv.socioapp.ui.components
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -53,6 +54,7 @@ fun MiTextField(
     onTrailingIconClick: () -> Unit = { },
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     readOnly: Boolean = false,
+    enabled: Boolean = true,
     maxLines: Int = 1,
 ) {
     OutlinedTextField(
@@ -136,15 +138,17 @@ fun MiCheckBox(
     onValorChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Checkbox(
-        checked = valor,
-        onCheckedChange = { valor -> onValorChange(valor) },
-        modifier = modifier
-    )
-    Text(
-        text = label,
-        modifier = modifier,
-    )
+    Row (modifier = modifier) {
+        Checkbox(
+            checked = valor,
+            onCheckedChange = { valor -> onValorChange(valor) },
+            modifier = Modifier.weight(1f)
+        )
+        Text(
+            text = label,
+            modifier = Modifier.weight(1f),
+        )
+    }
 }
 
 @Composable

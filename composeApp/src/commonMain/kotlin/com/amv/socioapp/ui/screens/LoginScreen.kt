@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -24,6 +23,7 @@ import com.amv.socioapp.ui.components.MiLabel
 import com.amv.socioapp.ui.components.MiTextField
 import com.amv.socioapp.ui.viewmodel.AuthViewModel
 import com.amv.socioapp.ui.viewmodel.InputViewModel
+import com.amv.socioapp.util.responsiveLayout
 
 @Composable
 fun LoginScreen(
@@ -57,10 +57,11 @@ private fun LoginContent(
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface,
             ),
-            modifier = Modifier.wrapContentSize()
+            modifier = Modifier.responsiveLayout()
         ) {
             Column(
                 modifier = Modifier
+                    .fillMaxWidth()
                     .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -90,7 +91,7 @@ private fun LoginContent(
                     esVisible = inputViewModel.esPasswordVisible,
                     trailingIcon = Icons.Filled.Visibility,
                     onTrailingIconClick = inputViewModel::actualizarPasswordVisible,
-                    readOnly = !inputViewModel.esEmailErroneo,
+                    enabled = !inputViewModel.esEmailErroneo,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 )
 

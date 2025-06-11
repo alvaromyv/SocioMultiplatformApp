@@ -13,6 +13,9 @@ interface SocioServices {
     @GET("socios")
     suspend fun leerTodos(): BaseResponse
 
+    @GET("socios/{id}")
+    suspend fun leeUno(@Path("id") id: Int): BaseResponse
+
     @POST("socios")
     suspend fun creaUno(@Body socio: SocioRequest): BaseResponse
 

@@ -21,7 +21,7 @@ data class Socio(
     @SerialName("fecha_antiguedad") private val _fechaAntiguedad: String,
     val categoria: Categoria,
     @SerialName("abonado") val esAbonado: Boolean,
-    @SerialName("usuario_id") private val usuarioId: Int,
+    @SerialName("usuario_id") internal val usuarioId: Int,
     val usuario: Usuario,
 ) : MyParcelable {
     val fechaNacimiento: LocalDateTime

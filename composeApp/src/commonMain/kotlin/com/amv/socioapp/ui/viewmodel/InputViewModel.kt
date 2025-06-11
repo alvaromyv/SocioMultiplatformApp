@@ -7,6 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.amv.socioapp.model.Categoria
 import com.amv.socioapp.model.Rol
+import com.amv.socioapp.model.Socio
+import com.amv.socioapp.model.Usuario
 import io.github.vinceglb.filekit.PlatformFile
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
@@ -24,6 +26,7 @@ class InputViewModel : ViewModel() {
 
     /////////////////////////////////////// ESTADOS ////////////////////////////////////////////////
     data class UsuarioFormState(
+        val id: Int? = null,
         val avatar: PlatformFile? = null,
         val nombre: String = "",
         val apellidos: String? = "",
@@ -34,6 +37,7 @@ class InputViewModel : ViewModel() {
     )
 
     data class SocioFormState(
+        val id: Int? = null,
         val categoria: Categoria = Categoria.ADULTO,
         val fechaNacimiento: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
         val fechaAntiguedad: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
@@ -128,7 +132,43 @@ class InputViewModel : ViewModel() {
         esPasswordVisible = !esPasswordVisible
     }
 
+    fun actualizarUsuarioId(id: Int) {
+        socioFormState = socioFormState.copy(usuarioId = id)
+    }
+
     ////////////////////////////////////// FUNCIONES ///////////////////////////////////////////////
+    fun cargarSocio(socio: Socio) {
+        socioFormState = SocioFormState(
+            categoria = socio.categoria,
+            fechaNacimiento = socio.fechaNacimiento,
+            fechaAntiguedad = socio.fechaAntiguedad,
+            abonado = socio.esAbonado,
+            usuarioId = socio.usuarioId
+        )
+        cargarUsuario(socio.usuario)
+    }
+
+    fun cargarUsuario(usuario: Usuario) {
+        usuarioFormState = UsuarioFormState(
+            id = usuario.id,
+            //avatar = PlatformFile(usuario.avatarUrl),
+            nombre = usuario.nombre,
+            apellidos = usuario.apellidos,
+            telefono = usuario.telefono,
+            email = usuario.email,
+            password = usuario.password,
+            rol = usuario.rol
+        )
+    }
+
+    fun crearSocio() {
+
+    }
+
+    fun crearUsuario() {
+
+    }
+
     fun reiniciarValores() {
         usuarioFormState = UsuarioFormState()
         socioFormState = SocioFormState()

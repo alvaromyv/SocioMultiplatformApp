@@ -9,10 +9,14 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.amv.socioapp.AppEnvironment
+import com.amv.socioapp.model.Socio
 import com.amv.socioapp.network.repository.UsuariosRepository
 import com.amv.socioapp.model.Usuario
 import com.amv.socioapp.network.model.ResponseError
 import com.amv.socioapp.network.model.ResponseSuccess
+import com.amv.socioapp.network.model.SimpleResponse
+import com.amv.socioapp.network.model.UnSocioResponse
+import com.amv.socioapp.network.model.UnUsuarioResponse
 import com.amv.socioapp.network.model.UsuariosResponse
 import kotlinx.coroutines.launch
 import kotlinx.serialization.SerializationException
@@ -28,6 +32,9 @@ class UsuariosViewModel(private val usuariosRepository: UsuariosRepository) : Vi
     var usuariosUiState: UsuariosUiState by mutableStateOf(UsuariosUiState.Loading)
         private set
 
+    var seleccionado by mutableStateOf<Usuario?>(null)
+        internal set
+
     init {
         leerTodos()
     }
@@ -36,13 +43,61 @@ class UsuariosViewModel(private val usuariosRepository: UsuariosRepository) : Vi
         viewModelScope.launch {
             usuariosUiState = UsuariosUiState.Loading
             usuariosUiState = try {
-                when(val response = usuariosRepository.obtenerUsuarios()) {
+                when(val response = usuariosRepository.leeTodos()) {
                     is ResponseSuccess -> {
                         when (val content = response.data) {
                             is UsuariosResponse -> UsuariosUiState.Success(content.result)
                             else -> throw SerializationException()
                         }
                     }
+                    is ResponseError -> UsuariosUiState.Error(response.error.message)
+                    else -> throw SerializationException()
+                }
+            } catch (e: Throwable) {
+                UsuariosUiState.Exception(e)
+            }
+        }
+    }
+
+    fun leeUno(id: Int) {
+        viewModelScope.launch {
+            try {
+                when (val response = usuariosRepository.leeUno(id)) {
+                    is ResponseSuccess -> {
+                        when (val content = response.data) {
+                            is UnUsuarioResponse -> {
+                                seleccionado = content.result
+                                leerTodos()
+                            }
+                            else -> throw SerializationException()
+                        }
+                    }
+                    is ResponseError -> UsuariosUiState.Error(response.error.message)
+                    else -> throw SerializationException()
+                }
+            } catch (e: Throwable) {
+                UsuariosUiState.Exception(e)
+            }
+        }
+    }
+
+    fun borraUno(id: Int) {
+        viewModelScope.launch {
+            try {
+                when (val response = usuariosRepository.borraUno(id)) {
+                    is ResponseSuccess -> {
+                        when (val content = response.data) {
+                            is SimpleResponse -> {
+                                if (content.info.numberOfEntriesDeleted == 1) {
+                                    leerTodos()
+                                } else {
+                                    throw SerializationException()
+                                }
+                            }
+                            else -> throw SerializationException()
+                        }
+                    }
+
                     is ResponseError -> UsuariosUiState.Error(response.error.message)
                     else -> throw SerializationException()
                 }

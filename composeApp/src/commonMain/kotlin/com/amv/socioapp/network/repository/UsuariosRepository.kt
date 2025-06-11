@@ -6,8 +6,9 @@ import com.amv.socioapp.network.model.UsuarioRequest
 import com.amv.socioapp.network.service.UsuarioService
 
 interface UsuariosRepository {
-    suspend fun obtenerUsuarios(): BaseResponse
-    suspend fun obtenerPerfil(): BaseResponse
+    suspend fun leeTodos(): BaseResponse
+    suspend fun leePerfil(): BaseResponse
+    suspend fun leeUno(id: Int): BaseResponse
     suspend fun busca(texto: String): BaseResponse
     suspend fun subirAvatar(id: Int): BaseResponse
     suspend fun actualizarPerfil(usuario: UsuarioRequest): BaseResponse
@@ -18,8 +19,9 @@ interface UsuariosRepository {
 class NetworkUsuariosRepository(
     private val usuarioService: UsuarioService
 ) : UsuariosRepository {
-    override suspend fun obtenerUsuarios(): BaseResponse = usuarioService.leerTodos()
-    override suspend fun obtenerPerfil(): BaseResponse = usuarioService.obtenerPerfil()
+    override suspend fun leeTodos(): BaseResponse = usuarioService.leerTodos()
+    override suspend fun leePerfil(): BaseResponse = usuarioService.leePerfil()
+    override suspend fun leeUno(id: Int): BaseResponse = usuarioService.leeUno(id)
     override suspend fun busca(texto: String): BaseResponse = usuarioService.busca(texto)
     override suspend fun subirAvatar(id: Int): BaseResponse = usuarioService.subirAvatar(id)
     override suspend fun actualizarPerfil(usuario: UsuarioRequest): BaseResponse = usuarioService.actualizarPerfil(usuario)

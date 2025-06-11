@@ -1,9 +1,11 @@
 package com.amv.socioapp.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Group
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
@@ -20,10 +22,12 @@ enum class TopLevelDestination(
 //    @StringRes val titleTextId: Int,
     val label: String,
     val route: String,
+    val visibleNavigation: Boolean = true
 ) {
     INICIO(Icons.Filled.Home, Icons.Outlined.Home, "Inicio", getSerialName<Inicio>()),
     SOCIOS(Icons.Filled.Group, Icons.Outlined.Group, "Socios", getSerialName<Socios>()),
-    USUARIOS(Icons.Filled.Person, Icons.Outlined.Person, "Usuarios", getSerialName<Usuarios>())
+    USUARIOS(Icons.Filled.Person, Icons.Outlined.Person, "Usuarios", getSerialName<Usuarios>()),
+    FORMULARIO(Icons.Filled.Edit, Icons.Outlined.Edit, "Formulario", getSerialName<Formulario>(), visibleNavigation = false)
 }
 
 @Serializable @SerialName("inicio")

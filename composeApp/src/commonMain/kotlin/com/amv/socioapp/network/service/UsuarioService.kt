@@ -16,7 +16,10 @@ interface UsuarioService {
     suspend fun leerTodos(): BaseResponse
 
     @GET("usuarios")
-    suspend fun obtenerPerfil(): BaseResponse
+    suspend fun leePerfil(): BaseResponse
+
+    @GET("usuarios/{id}")
+    suspend fun leeUno(@Path("id") id: Int): BaseResponse
 
     @GET("buscar")
     suspend fun busca(@Query("q") texto: String): BaseResponse

@@ -45,6 +45,7 @@ import com.amv.socioapp.navigation.Formulario
 import com.amv.socioapp.navigation.TopLevelDestination
 import com.amv.socioapp.ui.viewmodel.SociosViewModel
 import com.amv.socioapp.ui.viewmodel.UsuariosViewModel
+import com.amv.socioapp.util.responsiveNavigationSuiteType
 
 @Composable
 fun SocioNavegationWrapperUI(
@@ -53,24 +54,17 @@ fun SocioNavegationWrapperUI(
     usuariosViewModel: UsuariosViewModel,
     socioNavHost: @Composable () -> Unit = {}
 ) {
-    val windowAdaptiveInfo = currentWindowAdaptiveInfo()
-    val adaptiveWindowSizeClass = windowAdaptiveInfo.windowSizeClass
-
-    val layoutType = when (adaptiveWindowSizeClass.windowWidthSizeClass) {
-        WindowWidthSizeClass.EXPANDED -> NavigationSuiteType.NavigationRail
-        WindowWidthSizeClass.MEDIUM -> NavigationSuiteType.NavigationRail
-        WindowWidthSizeClass.COMPACT -> NavigationSuiteType.NavigationBar
-        else -> NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(windowAdaptiveInfo)
-    }
-
     val navBackStackEntry = navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry.value?.destination?.route
 
     NavigationSuiteScaffoldFab(
-        layoutType = layoutType,
+        layoutType = responsiveNavigationSuiteType(),
         navigationSuiteItems = {
-            TopLevelDestination.entries.forEach { item ->
+            TopLevelDestination.entries
+                .filter { it.visibleNavigation }
+                .forEach { item ->
                 val isSelected = currentRoute == item.route
+
                 item(
                     icon = {
                         NavigationIcon(
@@ -112,7 +106,7 @@ fun SocioNavegationWrapperUI(
                         ),
                     ),
             ) {
-                val destination = TopLevelDestination.entries.find { it.route == currentRoute }
+                val destination = TopLevelDestination.entries.find { currentRoute?.startsWith(it.route) == true }
                 var shouldShowTopAppBar = false
 
                 if (destination != null) {
