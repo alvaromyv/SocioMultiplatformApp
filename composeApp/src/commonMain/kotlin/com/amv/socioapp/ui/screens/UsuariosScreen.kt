@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.window.core.layout.WindowWidthSizeClass
+import com.amv.socioapp.model.Socio
 import com.amv.socioapp.model.Usuario
 import com.amv.socioapp.navigation.Formulario
 import com.amv.socioapp.ui.components.ExceptionScreen
@@ -134,6 +135,40 @@ private fun ListPaneContent(
                     PerfilAvatar(
                         avatarLink = item.avatarUrl,
                         contentDescription = item.obtenerNombreCompleto()
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 12.dp)
+                    .clickable { onItemClick(item) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun ListPaneContent(
+    items: List<Socio>,
+    onItemClick: (Socio) -> Unit,
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp)
+    ) {
+        items(items) { item ->
+            ListItem(
+                headlineContent = { Text(item.usuario?.obtenerNombreCompleto() ?: "") },
+                supportingContent = {
+                    Row (modifier = Modifier.fillMaxWidth()) {
+                        Text(text = item.categoria.name, modifier = Modifier.weight(1f))
+                        Text(text = Socio.formatearFecha(item.fechaAntiguedad), modifier = Modifier.weight(1f), textAlign = TextAlign.End)
+                    }
+                },
+                leadingContent = {
+                    PerfilAvatar(
+                        avatarLink = item.usuario?.avatarUrl ?: "",
+                        contentDescription = item.usuario?.obtenerNombreCompleto()
                     )
                 },
                 modifier = Modifier

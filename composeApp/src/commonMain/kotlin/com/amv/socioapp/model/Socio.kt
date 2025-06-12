@@ -22,7 +22,7 @@ data class Socio(
     val categoria: Categoria,
     @SerialName("abonado") val esAbonado: Boolean,
     @SerialName("usuario_id") internal val usuarioId: Int,
-    val usuario: Usuario,
+    val usuario: Usuario? = null,
 ) : MyParcelable {
     val fechaNacimiento: LocalDateTime
         get() = Instant.parse(_fechaNacimiento).toLocalDateTime(TimeZone.UTC)

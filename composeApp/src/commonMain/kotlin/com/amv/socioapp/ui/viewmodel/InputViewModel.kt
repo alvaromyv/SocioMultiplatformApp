@@ -145,7 +145,7 @@ class InputViewModel : ViewModel() {
             abonado = socio.esAbonado,
             usuarioId = socio.usuarioId
         )
-        cargarUsuario(socio.usuario)
+        if(socio.usuario != null){ cargarUsuario(socio.usuario) }
     }
 
     fun cargarUsuario(usuario: Usuario) {
@@ -159,6 +159,8 @@ class InputViewModel : ViewModel() {
             password = usuario.password,
             rol = usuario.rol
         )
+
+        if(usuario.socio != null){ cargarSocio(usuario.socio) }
     }
 
     fun crearSocio() {

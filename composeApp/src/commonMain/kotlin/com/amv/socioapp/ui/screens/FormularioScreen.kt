@@ -15,6 +15,8 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +29,7 @@ import coil3.compose.AsyncImage
 import com.amv.socioapp.model.Socio
 import com.amv.socioapp.model.Usuario
 import com.amv.socioapp.ui.components.MiCheckBox
+import com.amv.socioapp.ui.components.MiLabel
 import com.amv.socioapp.ui.components.MiTextField
 import com.amv.socioapp.ui.components.MiTextFieldFecha
 import com.amv.socioapp.ui.components.SeleccionButtonRow
@@ -78,6 +81,7 @@ private fun FormularioContent(
                 .responsiveLayout()
                 .verticalScroll(scrollState)
         ) {
+            MiLabel("USUARIO", style = MaterialTheme.typography.headlineMedium)
             val launcher = rememberFilePickerLauncher(
                 type = FileKitType.Image
             ) { file -> vm.actualizarAvatar(file) }
@@ -149,6 +153,8 @@ private fun FormularioContent(
                 onValorChange = vm::actualizarRol,
                 modifier = Modifier.fillMaxWidth()
             )
+
+            MiLabel("SOCIO", style = MaterialTheme.typography.headlineMedium)
 
             SeleccionButtonRow(
                 valor = vm.socioFormState.categoria,

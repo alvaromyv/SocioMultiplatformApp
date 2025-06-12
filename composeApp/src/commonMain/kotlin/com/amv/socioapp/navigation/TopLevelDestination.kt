@@ -27,6 +27,9 @@ enum class TopLevelDestination(
     INICIO(Icons.Filled.Home, Icons.Outlined.Home, "Inicio", getSerialName<Inicio>()),
     SOCIOS(Icons.Filled.Group, Icons.Outlined.Group, "Socios", getSerialName<Socios>()),
     USUARIOS(Icons.Filled.Person, Icons.Outlined.Person, "Usuarios", getSerialName<Usuarios>()),
+
+    ADMIN(Icons.Filled.Person, Icons.Outlined.Person, "Administración", getSerialName<Admin>()),
+
     FORMULARIO(Icons.Filled.Edit, Icons.Outlined.Edit, "Formulario", getSerialName<Formulario>(), visibleNavigation = false)
 }
 
@@ -38,6 +41,9 @@ object Socios
 
 @Serializable @SerialName("usuarios")
 object Usuarios
+
+@Serializable @SerialName("administracion")
+object Admin
 
 @Serializable @SerialName("formulario")
 data class Formulario(val modoEdicion: Boolean)

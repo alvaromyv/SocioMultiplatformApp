@@ -16,6 +16,7 @@ data class Usuario(
     val email: String,
     val password: String,
     val rol: Rol,
+    val socio: Socio? = null
 ) : MyParcelable {
     fun obtenerNombreCompleto(): String {
         apellidos.let {

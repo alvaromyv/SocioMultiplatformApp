@@ -54,6 +54,7 @@ class UsuariosViewModel(private val usuariosRepository: UsuariosRepository) : Vi
                     else -> throw SerializationException()
                 }
             } catch (e: Throwable) {
+                throw e
                 UsuariosUiState.Exception(e)
             }
         }

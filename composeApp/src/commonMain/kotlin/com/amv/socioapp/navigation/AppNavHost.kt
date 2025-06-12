@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.amv.socioapp.ui.screens.AdminScreen
 import com.amv.socioapp.ui.screens.FormularioScreen
 import com.amv.socioapp.ui.screens.SociosScreen
 import com.amv.socioapp.ui.screens.UsuariosScreen
@@ -25,12 +26,21 @@ fun AppNavHost(
         composable<Inicio> {
             Text("INICIO")
         }
+
         composable<Socios> {
             SociosScreen(navController, sociosViewModel)
         }
         composable<Usuarios> {
             UsuariosScreen(navController, usuariosViewModel)
         }
+
+        composable<Admin>{
+            AdminScreen(
+                usuariosUiState = usuariosViewModel.usuariosUiState,
+                onReintentarClick = { usuariosViewModel.leerTodos() }
+            )
+        }
+
         composable<Formulario> { backStackEntry ->
             val modoEdicion = backStackEntry.toRoute<Formulario>().modoEdicion
             FormularioScreen(

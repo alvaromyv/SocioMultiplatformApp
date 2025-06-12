@@ -126,7 +126,7 @@ private fun ListPaneContent(
     ) {
         items(items) { item ->
             ListItem(
-                headlineContent = { Text(item.usuario.obtenerNombreCompleto()) },
+                headlineContent = { Text(item.usuario?.obtenerNombreCompleto() ?: "") },
                 supportingContent = {
                     Row (modifier = Modifier.fillMaxWidth()) {
                         Text(text = item.categoria.name, modifier = Modifier.weight(1f))
@@ -135,8 +135,8 @@ private fun ListPaneContent(
                 },
                 leadingContent = {
                     PerfilAvatar(
-                        avatarLink = item.usuario.avatarUrl,
-                        contentDescription = item.usuario.obtenerNombreCompleto()
+                        avatarLink = item.usuario?.avatarUrl ?: "",
+                        contentDescription = item.usuario?.obtenerNombreCompleto()
                     )
                 },
                 modifier = Modifier
@@ -186,8 +186,8 @@ fun DetailPaneContent(
                                 .padding(bottom = 24.dp)
                         ) {
                             PerfilAvatar(
-                                avatarLink = socio.usuario.avatarUrl,
-                                contentDescription = socio.usuario.obtenerNombreCompleto(),
+                                avatarLink = socio.usuario?.avatarUrl ?: "",
+                                contentDescription = socio.usuario?.obtenerNombreCompleto(),
                                 iconSize = 128.dp
                             )
 
@@ -195,7 +195,7 @@ fun DetailPaneContent(
 
                             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                 Text(
-                                    text = socio.usuario.obtenerNombreCompleto(),
+                                    text = socio.usuario?.obtenerNombreCompleto() ?: "",
                                     style = MaterialTheme.typography.headlineLarge
                                 )
                                 Text(
@@ -212,15 +212,15 @@ fun DetailPaneContent(
                                 .padding(bottom = 24.dp)
                         ) {
                             PerfilAvatar(
-                                avatarLink = socio.usuario.avatarUrl,
-                                contentDescription = socio.usuario.obtenerNombreCompleto(),
+                                avatarLink = socio.usuario?.avatarUrl ?: "",
+                                contentDescription = socio.usuario?.obtenerNombreCompleto(),
                                 iconSize = 112.dp
                             )
 
                             Spacer(modifier = Modifier.height(16.dp))
 
                             Text(
-                                text = socio.usuario.obtenerNombreCompleto(),
+                                text = socio.usuario?.obtenerNombreCompleto() ?: "",
                                 style = MaterialTheme.typography.headlineMedium,
                                 textAlign = TextAlign.Center
                             )
@@ -244,8 +244,8 @@ fun DetailPaneContent(
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.primary
                         )
-                        Text(text = socio.usuario.email, style = MaterialTheme.typography.bodyLarge)
-                        Text(text = socio.usuario.telefono ?: "Desconocido", style = MaterialTheme.typography.bodyLarge)
+                        Text(text = socio.usuario?.email ?: "", style = MaterialTheme.typography.bodyLarge)
+                        Text(text = socio.usuario?.telefono ?: "Desconocido", style = MaterialTheme.typography.bodyLarge)
 
                         Spacer(modifier = Modifier.height(16.dp))
 
