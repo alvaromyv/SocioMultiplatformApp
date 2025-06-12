@@ -43,16 +43,13 @@ import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 @Composable
 fun FormularioScreen(
     vm: InputViewModel = remember { InputViewModel() },
-    seleccionado: Any?,
+    seleccionado: Usuario?,
     modoEdicion: Boolean,
     onDispose: () -> Unit,
 ) {
     LaunchedEffect(modoEdicion, seleccionado) {
         if (modoEdicion && seleccionado != null) {
-            when(seleccionado){
-                is Socio -> { vm.cargarSocio(seleccionado) }
-                is Usuario -> { vm.cargarUsuario(seleccionado) }
-            }
+             vm.cargarUsuario(seleccionado)
         } else {
             vm.reiniciarValores()
         }

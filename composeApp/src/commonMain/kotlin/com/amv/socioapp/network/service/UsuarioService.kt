@@ -21,7 +21,7 @@ interface UsuarioService {
     @GET("usuarios/{id}")
     suspend fun leeUno(@Path("id") id: Int): BaseResponse
 
-    @GET("buscar")
+    @GET("usuarios/buscar")
     suspend fun busca(@Query("q") texto: String): BaseResponse
 
     @POST("usuarios/subir-avatar/{id}")

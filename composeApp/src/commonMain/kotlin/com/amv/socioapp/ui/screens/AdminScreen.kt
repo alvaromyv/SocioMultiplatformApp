@@ -1,12 +1,16 @@
 package com.amv.socioapp.ui.screens
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Tab
@@ -27,12 +31,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.amv.socioapp.model.Socio
 import com.amv.socioapp.model.Usuario
-import com.amv.socioapp.navigation.Formulario
 import com.amv.socioapp.ui.components.ExceptionScreen
 import com.amv.socioapp.ui.components.LoadingScreen
-import com.amv.socioapp.ui.viewmodel.SociosUiState
 import com.amv.socioapp.ui.viewmodel.UsuariosUiState
 import com.amv.socioapp.util.PerfilAvatar
 import kotlinx.coroutines.launch
@@ -59,13 +60,11 @@ private fun AdminListDetailPaneScaffold(
     val scope = rememberCoroutineScope()
     val scaffoldNavigator = rememberListDetailPaneScaffoldNavigator<Usuario>()
     val selectedItem = scaffoldNavigator.currentDestination?.contentKey
-    var indiceSeleccionado by remember { mutableIntStateOf(0) }
 
     ListDetailPaneScaffold(
         directive = scaffoldNavigator.scaffoldDirective,
         scaffoldState = scaffoldNavigator.scaffoldState,
         listPane = {
-            TabOpciones(indiceSeleccionado, onTabSeleccionado = { indice -> indiceSeleccionado = indice})
             AnimatedPane {
                 ListPaneContent(
                     items = usuarios,
@@ -74,14 +73,17 @@ private fun AdminListDetailPaneScaffold(
                             scaffoldNavigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item)
                         }
                     },
-                    indiceSeleccionado = indiceSeleccionado,
                 )
             }
         },
         detailPane = {
             AnimatedPane {
                 selectedItem?.let { item ->
-
+                    DetailPaneContent(
+                        usuario = item,
+                        onEliminarClick = { /*vm.borraUno(it)*/ },
+                        onEditarClick = { /*vm.leeUno(it)*/ }
+                    )
                 }
             }
         }
@@ -99,36 +101,47 @@ private fun AdminListDetailPaneScaffold(
 private fun ListPaneContent(
     items: List<Usuario>,
     onItemClick: (Usuario) -> Unit,
-    indiceSeleccionado: Int
 ){
-    val filtrados: List<Usuario> = emptyList()
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(12.dp)
-    ) {
-        items(filtrados) { item ->
-            ListItem(
-                headlineContent = { Text(item.obtenerNombreCompleto()) },
-                supportingContent = { },
-                leadingContent = {
-                    PerfilAvatar(
-                        avatarLink = item.avatarUrl,
-                        contentDescription = item.obtenerNombreCompleto()
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 12.dp)
-                    .clickable { onItemClick(item) }
-            )
-        }
+    var indiceSeleccionado by remember { mutableIntStateOf(0) }
+    val filtrados: List<Usuario> = when(indiceSeleccionado) {
+        1 -> items.filter { it.socio != null }
+        2 -> items.filter { it.socio == null }
+        else -> items
     }
 
-    when(indiceSeleccionado) {
-        0 -> {}
-        1 -> {}
+    Column {
+        TabOpciones(indiceSeleccionado, onTabSeleccionado = { indice -> indiceSeleccionado = indice} )
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp)
+        ) {
+            items(filtrados) { item ->
+                ListItem(
+                    headlineContent = { Text(item.obtenerNombreCompleto()) },
+                    supportingContent = {
+                        if (item.socio != null) {
+                            Row (modifier = Modifier.fillMaxWidth()) {
+                                Text(text = item.socio.obtenerNumeracionFormateada(), modifier = Modifier.weight(1f))
+                                Text(text = item.socio.categoria.name, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
+                            }
+                        } else {
+                            Text(text = item.rol.name)
+                        }
+                    },
+                    leadingContent = {
+                        PerfilAvatar(
+                            avatarLink = item.avatarUrl,
+                            contentDescription = item.obtenerNombreCompleto()
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 12.dp)
+                        .clickable { onItemClick(item) }
+                )
+            }
+        }
     }
 }
 
@@ -136,9 +149,19 @@ private fun ListPaneContent(
 
 @Composable
 private fun DetailPaneContent(
+    usuario: Usuario,
+    onEliminarClick: (Int) -> Unit,
+    onEditarClick: (Int) -> Unit
+) {
+    ElevatedCard(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(12.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)
+    ) {
 
-){
-
+    }
 }
 
 @Composable
@@ -147,7 +170,7 @@ private fun TabOpciones(
     onTabSeleccionado: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val opciones = listOf("Socios", "Usuarios")
+    val opciones = listOf("Todos", "Socios", "Usuarios")
 
     TabRow(selectedTabIndex = indiceSeleccionado, modifier = modifier.fillMaxWidth()) {
         opciones.forEachIndexed { indice, opcion ->

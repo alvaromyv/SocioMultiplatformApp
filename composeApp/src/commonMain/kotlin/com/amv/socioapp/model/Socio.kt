@@ -30,6 +30,10 @@ data class Socio(
     val fechaAntiguedad: LocalDateTime
         get() = Instant.parse(_fechaAntiguedad).toLocalDateTime(TimeZone.UTC)
 
+    fun obtenerNumeracionFormateada(): String {
+        return "Nº: ${nSocio.toString().padStart(3, '0')}"
+    }
+
     companion object{
         @OptIn(FormatStringsInDatetimeFormats::class)
         fun formatearFecha(fecha: LocalDateTime): String {

@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DrawerDefaults
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarDefaults
@@ -41,6 +42,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.amv.socioapp.data.SessionManager
+import com.amv.socioapp.navigation.Busqueda
 import com.amv.socioapp.navigation.Formulario
 import com.amv.socioapp.navigation.TopLevelDestination
 import com.amv.socioapp.ui.viewmodel.SociosViewModel
@@ -82,8 +84,17 @@ fun SocioNavegationWrapperUI(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { navController.navigate(Formulario(false)) }) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = null)
+                Icon(imageVector = Icons.Filled.Add, contentDescription = "Agregar")
             }
+        },
+        extendedFloatingActionButton = {
+            ExtendedFloatingActionButton(
+                icon = {
+                    Icon(imageVector = Icons.Filled.Add, contentDescription = "Agregar")
+                },
+                text = { Text("Agregar") },
+                onClick = { navController.navigate(Formulario(false)) }
+            )
         }
     ) {
         Scaffold(
@@ -119,7 +130,7 @@ fun SocioNavegationWrapperUI(
                         actualizarIconContentDescription = "Actualizar",
                         actionIcon = Icons.Filled.Settings,
                         actionIconContentDescription = "Ajustes",
-                        onNavigationClick = { },
+                        onNavigationClick = { navController.navigate(Busqueda) },
                         onActualizarClick = {
                             sociosViewModel.leerTodos()
                             usuariosViewModel.leerTodos()
@@ -170,6 +181,7 @@ private fun NavigationSuiteScaffoldFab(
     containerColor: Color = NavigationSuiteScaffoldDefaults.containerColor,
     contentColor: Color = NavigationSuiteScaffoldDefaults.contentColor,
     floatingActionButton: @Composable () -> Unit = {},
+    extendedFloatingActionButton: @Composable () -> Unit = {},
     content: @Composable () -> Unit = {},
 ) {
     Surface(modifier = modifier, color = containerColor, contentColor = contentColor) {
@@ -178,7 +190,7 @@ private fun NavigationSuiteScaffoldFab(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    if (layoutType == NavigationSuiteType.NavigationRail || layoutType == NavigationSuiteType.NavigationDrawer) {
+                    if (layoutType == NavigationSuiteType.NavigationRail/* || layoutType == NavigationSuiteType.NavigationDrawer*/) {
                         Box(
                             modifier = Modifier.padding(16.dp)
                         ) {
@@ -207,7 +219,9 @@ private fun NavigationSuiteScaffoldFab(
                         }
                     ),
                     floatingActionButton = {
-                        if (layoutType == NavigationSuiteType.NavigationBar) { floatingActionButton() } }
+                        if (layoutType == NavigationSuiteType.NavigationBar) { floatingActionButton() }
+                        else if (layoutType == NavigationSuiteType.NavigationDrawer) { extendedFloatingActionButton() }
+                    }
                 ) {
                     Box(modifier = Modifier.padding(it)) {
                         content()

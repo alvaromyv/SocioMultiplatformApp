@@ -35,6 +35,11 @@ class UsuariosViewModel(private val usuariosRepository: UsuariosRepository) : Vi
     var seleccionado by mutableStateOf<Usuario?>(null)
         internal set
 
+    var searchQuery by mutableStateOf<String>("")
+
+    var buscados by mutableStateOf<List<Usuario>>(emptyList())
+        private set
+
     init {
         leerTodos()
     }
@@ -54,7 +59,6 @@ class UsuariosViewModel(private val usuariosRepository: UsuariosRepository) : Vi
                     else -> throw SerializationException()
                 }
             } catch (e: Throwable) {
-                throw e
                 UsuariosUiState.Exception(e)
             }
         }
@@ -77,6 +81,26 @@ class UsuariosViewModel(private val usuariosRepository: UsuariosRepository) : Vi
                     else -> throw SerializationException()
                 }
             } catch (e: Throwable) {
+                UsuariosUiState.Exception(e)
+            }
+        }
+    }
+
+    fun buscarUsuario(query: String) {
+        viewModelScope.launch {
+            try {
+                when(val response = usuariosRepository.busca(query)) {
+                    is ResponseSuccess -> {
+                        when (val content = response.data) {
+                            is UsuariosResponse -> buscados = content.result
+                            else -> throw SerializationException()
+                        }
+                    }
+                    is ResponseError -> UsuariosUiState.Error(response.error.message)
+                    else -> throw SerializationException()
+                }
+            } catch (e: Throwable) {
+                throw e
                 UsuariosUiState.Exception(e)
             }
         }

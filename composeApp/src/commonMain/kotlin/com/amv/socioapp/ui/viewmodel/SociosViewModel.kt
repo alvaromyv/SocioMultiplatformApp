@@ -31,9 +31,6 @@ class SociosViewModel(private val sociosRepository: SociosRepository) : ViewMode
     var sociosUiState: SociosUiState by mutableStateOf(SociosUiState.Loading)
         private set
 
-    var seleccionado by mutableStateOf<Socio?>(null)
-        internal set
-
     init {
         leerTodos()
     }
@@ -46,28 +43,6 @@ class SociosViewModel(private val sociosRepository: SociosRepository) : ViewMode
                     is ResponseSuccess -> {
                         when (val content = response.data) {
                             is SociosResponse -> SociosUiState.Success(content.result)
-                            else -> throw SerializationException()
-                        }
-                    }
-                    is ResponseError -> SociosUiState.Error(response.error.message)
-                    else -> throw SerializationException()
-                }
-            } catch (e: Throwable) {
-                SociosUiState.Exception(e)
-            }
-        }
-    }
-
-    fun leeUno(id: Int) {
-        viewModelScope.launch {
-            try {
-                when (val response = sociosRepository.leeUno(id)) {
-                    is ResponseSuccess -> {
-                        when (val content = response.data) {
-                            is UnSocioResponse -> {
-                                seleccionado = content.result
-                                leerTodos()
-                            }
                             else -> throw SerializationException()
                         }
                     }

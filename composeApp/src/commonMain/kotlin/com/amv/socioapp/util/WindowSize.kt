@@ -27,7 +27,7 @@ fun responsiveNavigationSuiteType(windowAdaptiveInfo: WindowAdaptiveInfo = curre
     val adaptiveWindowSizeClass = windowAdaptiveInfo.windowSizeClass
 
     return when (adaptiveWindowSizeClass.windowWidthSizeClass) {
-        WindowWidthSizeClass.EXPANDED -> NavigationSuiteType.NavigationRail
+        WindowWidthSizeClass.EXPANDED -> NavigationSuiteType.NavigationDrawer
         WindowWidthSizeClass.MEDIUM -> NavigationSuiteType.NavigationRail
         WindowWidthSizeClass.COMPACT -> NavigationSuiteType.NavigationBar
         else -> NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(windowAdaptiveInfo)
