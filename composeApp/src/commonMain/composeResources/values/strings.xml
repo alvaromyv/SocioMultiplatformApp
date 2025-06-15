@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="administracion_titulo">Administration</string>
+    <string name="agrega_titulo">Add</string>
+    <string name="mi_perfil_titulo">My Profile</string>
+    <string name="buscar">Search...</string>
+    <string name="actualizar">Update</string>
+    <string name="ajustes">Settings</string>
+    <string name="todos">All</string>
+    <string name="socios">Partners</string>
+    <string name="usuarios">Users</string>
+    <string name="tema">Theme</string>
+    <string name="mismo_dispositivo">Same as device</string>
+    <string name="tema_claro">Light</string>
+    <string name="tema_oscuro">Dark</string>
+    <string name="idioma">Language</string>
+    <string name="ingles">English</string>
+    <string name="español">Spanish</string>
+    <string name="re_asignar_numeracion">Reassign Numbering</string>
+    <string name="cerrar_sesion">Log Out</string>
+    <string name="confirmar">Confirm</string>
+    <string name="cancelar">Cancel</string>
+    <string name="re_asignar_numeracion_texto">Are you sure you want to reassign the partners' numbering?</string>
+    <string name="re_asignar_numeracion_titulo">Reassign Numbering</string>
+    <string name="ok">OK</string>
+    <string name="informacion">Information</string>
+    <string name="nombre">Name</string>
+    <string name="apellidos">Surnames</string>
+    <string name="telefono">Phone</string>
+    <string name="email">Email</string>
+    <string name="contraseña">Password</string>
+    <string name="rol">Role</string>
+    <string name="socio">Partner</string>
+    <string name="es_socio">Is a partner?</string>
+    <string name="categoria">Category</string>
+    <string name="fecha_antiguedad">Seniority Date</string>
+    <string name="abonado">Season Ticket Holder</string>
+    <string name="error_fecha">The entered date must not be later than the current one.</string>
+    <string name="error_telefono">The entered phone number is not valid.</string>
+    <string name="error_email">The entered email is not valid.</string>
+    <string name="error_nombre">The name must not exceed %1$d characters.</string>
+    <string name="error_contraseña">The password must be at least %1$d characters long.</string>
+    <string name="error_apellidos">The surname must not exceed %1$d characters.</string>
+    <string name="error_red">Network Error. Please try again</string>
+    <string name="reintentar">Try again</string>
+    <string name="editar">Modify</string>
+    <string name="eliminar">Delete</string>
+    <string name="confirmar_eliminar">Are you sure you want to delete this user?</string>
+    <string name="confirmar_modificar">Are you sure you want to modify this user?</string>
+    <string name="seleccionar">Select</string>
+    <string name="iniciar_sesion">Log In</string>
+    <string name="acceder">Access</string>
+    <string name="regresar">Back</string>"
+    <!--<string name=""></string>-->
+</resources>

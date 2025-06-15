@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="administracion_titulo">Administración</string>
+    <string name="agrega_titulo">Agregar</string>
+    <string name="mi_perfil_titulo">Mi Perfil</string>
+    <string name="buscar">Buscar...</string>
+    <string name="actualizar">Actualizar</string>
+    <string name="ajustes">Ajustes</string>
+    <string name="todos">Todos</string>
+    <string name="socios">Socios</string>
+    <string name="usuarios">Usuarios</string>
+    <string name="tema">Tema</string>
+    <string name="mismo_dispositivo">Mismo que el dispositivo</string>
+    <string name="tema_claro">Claro</string>
+    <string name="tema_oscuro">Oscuro</string>
+    <string name="idioma">Idioma</string>
+    <string name="ingles">Inglés</string>
+    <string name="español">Español</string>
+    <string name="re_asignar_numeracion">Reasignar Numeración</string>
+    <string name="cerrar_sesion">Cerrar Sesión</string>
+    <string name="confirmar">Aceptar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="re_asignar_numeracion_texto">¿Estás seguro de que quieres reasignar la numeración de los socios?</string>
+    <string name="re_asignar_numeracion_titulo">Reasignar Numeración</string>
+    <string name="ok">OK</string>
+    <string name="informacion">Informacion</string>
+    <string name="nombre">Nombre</string>
+    <string name="apellidos">Apellidos</string>
+    <string name="telefono">Telefono</string>
+    <string name="email">Email</string>
+    <string name="contraseña">Contraseña</string>
+    <string name="rol">Rol</string>
+    <string name="socio">Socio</string>
+    <string name="es_socio">¿Es socio?</string>
+    <string name="categoria">Categoría</string>
+    <string name="fecha_antiguedad">Fecha de Antiguedad</string>
+    <string name="abonado">Abonado</string>
+    <string name="error_fecha">La fecha introducida no debe ser posterior a la actual.</string>
+    <string name="error_telefono">El telefono introducido no es válido.</string>
+    <string name="error_email">El correo introducido no es válido.</string>
+    <string name="error_nombre">El nombre no debe superar los %1$d caracteres.</string>
+    <string name="error_contraseña">La contraseña debe tener al menos %1$d caracteres.</string>
+    <string name="error_apellidos">El apellido no debe superar los %1$d caracteres.</string>
+    <string name="error_red">Error de red. Inténtalo de nuevo.</string>
+    <string name="reintentar">Reintentar</string>
+    <string name="editar">Editar</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="confirmar_eliminar">¿Estás seguro de que quieres eliminar este usuario?</string>
+    <string name="confirmar_modificar">¿Estás seguro de que quieres modificar este usuario?</string>
+    <string name="seleccionar">Seleccionar</string>
+    <string name="iniciar_sesion">Iniciar Sesión</string>
+    <string name="acceder">Acceder</string>
+    <string name="regresar">Regresar</string>"
+    <!--<string name=""></string>-->
+</resources>
