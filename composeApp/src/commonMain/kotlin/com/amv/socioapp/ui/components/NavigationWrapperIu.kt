@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationRailDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -33,6 +34,10 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,11 +45,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.window.core.layout.WindowWidthSizeClass
 import com.amv.socioapp.data.SessionManager
+import com.amv.socioapp.navigation.Agrega
 import com.amv.socioapp.navigation.Busqueda
-import com.amv.socioapp.navigation.Formulario
 import com.amv.socioapp.navigation.TopLevelDestination
+import com.amv.socioapp.ui.events.MiCustomSnackbar
 import com.amv.socioapp.ui.viewmodel.SociosViewModel
 import com.amv.socioapp.ui.viewmodel.UsuariosViewModel
 import com.amv.socioapp.util.responsiveNavigationSuiteType
@@ -54,10 +59,20 @@ fun SocioNavegationWrapperUI(
     navController: NavController,
     sociosViewModel: SociosViewModel,
     usuariosViewModel: UsuariosViewModel,
+    snackbarHostState: SnackbarHostState,
     socioNavHost: @Composable () -> Unit = {}
 ) {
     val navBackStackEntry = navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry.value?.destination?.route
+    var mostrarDialogoAjustes by rememberSaveable { mutableStateOf(false) }
+
+    if (mostrarDialogoAjustes) {
+        AjustesDialog(
+            onDismiss = { mostrarDialogoAjustes = false },
+            onCerrarSesion = { SessionManager.cerrarSesion() },
+            onReasignarNumeracion = { sociosViewModel.reasignarNumeracion() }
+        )
+    }
 
     NavigationSuiteScaffoldFab(
         layoutType = responsiveNavigationSuiteType(),
@@ -83,7 +98,7 @@ fun SocioNavegationWrapperUI(
             }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { navController.navigate(Formulario(false)) }) {
+            FloatingActionButton(onClick = { navController.navigate(Agrega) }) {
                 Icon(imageVector = Icons.Filled.Add, contentDescription = "Agregar")
             }
         },
@@ -93,17 +108,14 @@ fun SocioNavegationWrapperUI(
                     Icon(imageVector = Icons.Filled.Add, contentDescription = "Agregar")
                 },
                 text = { Text("Agregar") },
-                onClick = { navController.navigate(Formulario(false)) }
+                onClick = { navController.navigate(Agrega) }
             )
         }
     ) {
         Scaffold(
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
             snackbarHost = {
-//                SnackbarHost(
-//                    snackbarHostState,
-//                    modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
-//                )
+                MiCustomSnackbar(snackbarHostState)
             },
         ) { padding ->
             Column(
@@ -131,11 +143,8 @@ fun SocioNavegationWrapperUI(
                         actionIcon = Icons.Filled.Settings,
                         actionIconContentDescription = "Ajustes",
                         onNavigationClick = { navController.navigate(Busqueda) },
-                        onActualizarClick = {
-                            sociosViewModel.leerTodos()
-                            usuariosViewModel.leerTodos()
-                        },
-                        onActionClick = { SessionManager.cerrarSesion() }
+                        onActualizarClick = { usuariosViewModel.leerTodos() },
+                        onActionClick = { mostrarDialogoAjustes = true }
                     )
                 }
 
@@ -190,11 +199,12 @@ private fun NavigationSuiteScaffoldFab(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    if (layoutType == NavigationSuiteType.NavigationRail/* || layoutType == NavigationSuiteType.NavigationDrawer*/) {
+                    if (layoutType == NavigationSuiteType.NavigationRail || layoutType == NavigationSuiteType.NavigationDrawer) {
                         Box(
                             modifier = Modifier.padding(16.dp)
                         ) {
-                            floatingActionButton()
+                            if (layoutType == NavigationSuiteType.NavigationDrawer) { extendedFloatingActionButton() }
+                            else floatingActionButton()
                         }
                     }
                     NavigationSuite(
@@ -220,7 +230,6 @@ private fun NavigationSuiteScaffoldFab(
                     ),
                     floatingActionButton = {
                         if (layoutType == NavigationSuiteType.NavigationBar) { floatingActionButton() }
-                        else if (layoutType == NavigationSuiteType.NavigationDrawer) { extendedFloatingActionButton() }
                     }
                 ) {
                     Box(modifier = Modifier.padding(it)) {

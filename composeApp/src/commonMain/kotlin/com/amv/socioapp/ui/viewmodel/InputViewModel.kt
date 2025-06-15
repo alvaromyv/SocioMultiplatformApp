@@ -9,25 +9,33 @@ import com.amv.socioapp.model.Categoria
 import com.amv.socioapp.model.Rol
 import com.amv.socioapp.model.Socio
 import com.amv.socioapp.model.Usuario
+import com.amv.socioapp.network.model.SocioBodyRequest
+import com.amv.socioapp.network.model.SocioRequest
+import com.amv.socioapp.network.model.UsuarioBodyRequest
+import com.amv.socioapp.network.model.UsuarioRequest
 import io.github.vinceglb.filekit.PlatformFile
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
+import kotlinx.datetime.format.FormatStringsInDatetimeFormats
+import kotlinx.datetime.format.byUnicodePattern
 import kotlinx.datetime.toLocalDateTime
-import kotlinx.serialization.SerialName
 
 class InputViewModel : ViewModel() {
     /////////////////////////////////////// CONSTANTES /////////////////////////////////////////////
     companion object {
-        private val EMAIL_REGEX = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")
-        private val PHONE_REGEX = Regex("^[0-9]{9}$")
-        private const val MIN_PASSWORD_LENGTH = 8
+        val EMAIL_REGEX = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")
+        val PHONE_REGEX = Regex("^[0-9]{9}$")
+        const val MAX_STRING_LENGTH = 50
+        const val MIN_PASSWORD_LENGTH = 8
     }
 
     /////////////////////////////////////// ESTADOS ////////////////////////////////////////////////
     data class UsuarioFormState(
         val id: Int? = null,
-        val avatar: PlatformFile? = null,
+        val avatarUri: PlatformFile? = null,
+        val avatarUrl: String? = null,
         val nombre: String = "",
         val apellidos: String? = "",
         val telefono: String? = "",
@@ -39,7 +47,6 @@ class InputViewModel : ViewModel() {
     data class SocioFormState(
         val id: Int? = null,
         val categoria: Categoria = Categoria.ADULTO,
-        val fechaNacimiento: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
         val fechaAntiguedad: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
         val abonado: Boolean = false,
         val usuarioId: Int? = null
@@ -49,10 +56,30 @@ class InputViewModel : ViewModel() {
 
     var socioFormState by mutableStateOf(SocioFormState())
 
+    var haySocio by mutableStateOf(false)
+
     var esPasswordVisible by mutableStateOf(false)
         private set
 
     ////////////////////////////////////// VALIDACIONES ///////////////////////////////////////////////
+    val esNombreErroneo by derivedStateOf {
+        if (usuarioFormState.nombre.isNotEmpty()) {
+            // El nombre se considera erroneo sí excede los 50 caracteres
+            usuarioFormState.nombre.length > MAX_STRING_LENGTH
+        } else {
+            false
+        }
+    }
+
+    val esApellidosErroneo by derivedStateOf {
+        if (usuarioFormState.apellidos.isNullOrEmpty()) {
+            false
+        } else {
+            // El apellido se considera erroneo sí excede los 50 caracteres
+            usuarioFormState.apellidos!!.length > MAX_STRING_LENGTH
+        }
+    }
+
     val esEmailErroneo by derivedStateOf {
         if (usuarioFormState.email.isNotEmpty()) {
             // El email se considera erroneo sí no encaja con la cadena de un correo por defecto
@@ -71,6 +98,28 @@ class InputViewModel : ViewModel() {
         }
     }
 
+    val esPasswordErroneo by derivedStateOf {
+        if (usuarioFormState.password.isNotEmpty()) {
+            // La contraseña se considera erroneo sí tiene menos de 8 caracteres
+            usuarioFormState.password.length < MIN_PASSWORD_LENGTH
+        } else {
+            false
+        }
+    }
+
+    val esFechaAntiguedadErroneo by derivedStateOf {
+        esFechaFutura(socioFormState.fechaAntiguedad)
+    }
+
+    val esFormularioValidado by derivedStateOf {
+        if (usuarioFormState.nombre.isEmpty() || usuarioFormState.email.isEmpty() || usuarioFormState.password.isEmpty()) {
+            false
+        } else {
+            // Si todos los campos están correctos, el formulario es válido
+            !esNombreErroneo && !esApellidosErroneo && !esTelefonoErroneo && !esEmailErroneo && !esFechaAntiguedadErroneo && !esPasswordErroneo
+        }
+    }
+
     val esFormularioLoginValido by derivedStateOf {
         if (usuarioFormState.email.isEmpty() || usuarioFormState.password.isEmpty()){
             false
@@ -79,9 +128,17 @@ class InputViewModel : ViewModel() {
         }
     }
 
+    fun esFechaFutura(fecha: LocalDateTime): Boolean {
+       return fecha > Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+    }
+
     ////////////////////////////////////// ACTUALIZAR //////////////////////////////////////////////
-    fun actualizarAvatar(avatar: PlatformFile?) {
-        usuarioFormState = usuarioFormState.copy(avatar = avatar)
+    fun actualizarAvatarUri(uri: PlatformFile?) {
+        usuarioFormState = usuarioFormState.copy(avatarUri = uri)
+    }
+
+    fun actualizarAvatarUrl(url: String?) {
+        usuarioFormState = usuarioFormState.copy(avatarUrl = url)
     }
 
     fun actualizarNombre(nombre: String) {
@@ -112,10 +169,6 @@ class InputViewModel : ViewModel() {
         socioFormState = socioFormState.copy(categoria = categoria)
     }
 
-    fun actualizarFechaNacimiento(fechaNacimiento: LocalDateTime) {
-        socioFormState = socioFormState.copy(fechaNacimiento = fechaNacimiento)
-    }
-
     fun actualizarFechaAntiguedad(fechaAntiguedad: LocalDateTime) {
         socioFormState = socioFormState.copy(fechaAntiguedad = fechaAntiguedad)
     }
@@ -132,26 +185,29 @@ class InputViewModel : ViewModel() {
         esPasswordVisible = !esPasswordVisible
     }
 
+    fun actualizarHaySocio(hay: Boolean) {
+        if(!hay) reiniciarValoresSocio()
+        haySocio = hay
+    }
     fun actualizarUsuarioId(id: Int) {
         socioFormState = socioFormState.copy(usuarioId = id)
     }
 
     ////////////////////////////////////// FUNCIONES ///////////////////////////////////////////////
     fun cargarSocio(socio: Socio) {
+        haySocio = true
         socioFormState = SocioFormState(
             categoria = socio.categoria,
-            fechaNacimiento = socio.fechaNacimiento,
             fechaAntiguedad = socio.fechaAntiguedad,
             abonado = socio.esAbonado,
             usuarioId = socio.usuarioId
         )
-        // if(socio.usuario != null){ cargarUsuario(socio.usuario) }
     }
 
     fun cargarUsuario(usuario: Usuario) {
         usuarioFormState = UsuarioFormState(
             id = usuario.id,
-            //avatar = PlatformFile(usuario.avatarUrl),
+            avatarUrl = usuario.avatarUrl,
             nombre = usuario.nombre,
             apellidos = usuario.apellidos,
             telefono = usuario.telefono,
@@ -159,20 +215,57 @@ class InputViewModel : ViewModel() {
             password = usuario.password,
             rol = usuario.rol
         )
-
-        if(usuario.socio != null){ cargarSocio(usuario.socio) }
+        actualizarHaySocio(usuario.socio != null)
+        if(usuario.socio != null) { cargarSocio(usuario.socio) }
     }
 
-    fun crearSocio() {
-
+    @OptIn(FormatStringsInDatetimeFormats::class)
+    fun construirSocio(): SocioRequest? {
+        return if(haySocio) SocioRequest(
+            id = socioFormState.id,
+            socio = SocioBodyRequest(
+                categoria = socioFormState.categoria,
+                fechaAntiguedad = socioFormState.fechaAntiguedad.format(LocalDateTime.Format { byUnicodePattern("yyyy-MM-dd") }),
+                abonado = socioFormState.abonado,
+                usuarioId = socioFormState.usuarioId ?: usuarioFormState.id
+            )
+        ) else null
     }
 
-    fun crearUsuario() {
-
+    fun construirUsuario(): UsuarioRequest {
+        return UsuarioRequest(
+            id = usuarioFormState.id,
+            usuario = UsuarioBodyRequest(
+                nombre = usuarioFormState.nombre,
+                apellidos = usuarioFormState.apellidos,
+                telefono = usuarioFormState.telefono,
+                email = usuarioFormState.email,
+                password = usuarioFormState.password,
+                rol = usuarioFormState.rol,
+            ),
+            avatar = usuarioFormState.avatarUri
+        )
     }
 
+    fun construirUsuarioVacio(): Usuario {
+        return Usuario(
+            id = 0,
+            avatarUrl = "",
+            nombre = "",
+            apellidos = null,
+            telefono = null,
+            email = "",
+            password = "",
+            rol = Rol.USUARIO,
+            socio = null
+        )
+    }
     fun reiniciarValores() {
         usuarioFormState = UsuarioFormState()
+        socioFormState = SocioFormState()
+    }
+
+    fun reiniciarValoresSocio() {
         socioFormState = SocioFormState()
     }
 }

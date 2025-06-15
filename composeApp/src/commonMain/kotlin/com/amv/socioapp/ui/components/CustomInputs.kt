@@ -1,6 +1,7 @@
 package com.amv.socioapp.ui.components
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -8,6 +9,7 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -15,6 +17,7 @@ import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -27,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.KeyboardType
@@ -91,6 +95,7 @@ fun MiTextField(
         keyboardOptions = keyboardOptions,
         visualTransformation = if (esVisible) VisualTransformation.None else PasswordVisualTransformation(),
         readOnly = readOnly,
+        enabled = enabled,
         maxLines = maxLines,
         shape = RoundedCornerShape(10.dp),
     )
@@ -135,12 +140,17 @@ fun MiDoubleTextField(
 fun MiCheckBox(
     valor: Boolean,
     label: String,
+    enabled: Boolean,
     onValorChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row (modifier = modifier) {
+    Row (
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Checkbox(
             checked = valor,
+            enabled = enabled,
             onCheckedChange = { valor -> onValorChange(valor) },
             modifier = Modifier.weight(1f)
         )
@@ -169,10 +179,29 @@ fun MiButton(
 }
 
 @Composable
+fun MiTextButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    content: @Composable RowScope.() -> Unit,
+) {
+    TextButton(
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        colors = ButtonDefaults.textButtonColors(
+            contentColor = MaterialTheme.colorScheme.onBackground,
+        ),
+        content = content,
+    )
+}
+
+@Composable
 inline fun <reified T> SeleccionButtonRow(
     valor: T,
     crossinline onValorChange: (T) -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
+    enabled: Boolean = true
 ) where T : Enum<T> {
     val elementos = enumValues<T>().toList()
     var seleccionado = elementos.indexOf(valor)
@@ -188,6 +217,7 @@ inline fun <reified T> SeleccionButtonRow(
                     seleccionado = indice
                     onValorChange(valor)
                 },
+                enabled = enabled,
                 selected = indice == seleccionado,
                 label = { Text(valor.toString()) }
             )
@@ -200,8 +230,10 @@ fun MiTextFieldFecha(
     label: String,
     fecha: LocalDateTime,
     hayError: Boolean,
+    mensajeError: String,
     onFechaChange: (LocalDateTime) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     var mostrarDialogo by remember { mutableStateOf(false) }
 
@@ -209,11 +241,11 @@ fun MiTextFieldFecha(
         label = label,
         valor = Socio.formatearFecha(fecha),
         leadingIcon = Icons.Filled.DateRange,
-        onLeadingIconClick = { mostrarDialogo = true },
+        onLeadingIconClick = { if(enabled) mostrarDialogo = true },
         readOnly = true,
         onValorChange = {},
         hayError = hayError,
-        mensajeError = "",
+        mensajeError = mensajeError,
         modifier = modifier
     )
 

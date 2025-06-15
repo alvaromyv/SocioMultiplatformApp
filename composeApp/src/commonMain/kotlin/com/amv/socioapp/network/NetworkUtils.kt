@@ -11,8 +11,10 @@ import com.amv.socioapp.network.model.UnSocioResponse
 import com.amv.socioapp.network.model.UnUsuarioResponse
 import com.amv.socioapp.network.model.UsuariosResponse
 import com.amv.socioapp.util.getBaseUrl
+import com.amv.socioapp.util.getLanguageTag
 import de.jensklingenberg.ktorfit.Ktorfit
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
@@ -53,13 +55,23 @@ object NetworkUtils {
         install(Auth) {
             bearer {
                 loadTokens {
-                    //BearerTokens("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyb290QGdtYWlsLmNvbSIsImlhdCI6MTc0OTMxODk4NCwiZXhwIjoxNzQ5NTM0OTg0fQ.HTZsuz2l1G0jKAgRQuylXitFxCFrOX5jh-ZJJpj-03E", null)
-                    BearerTokens(SessionManager.obtenerToken().toString(), null)
+                    SessionManager.obtenerToken()?.let { BearerTokens(it, null) }
+                }
+                refreshTokens {
+                    SessionManager.obtenerToken()?.let { BearerTokens(it, null) }
                 }
             }
         }
+        HttpResponseValidator {
+           validateResponse { response ->
+               if(response.status.value == 401 || response.status.value == 403) {
+                   SessionManager.cerrarSesion()
+               }
+           }
+        }
         defaultRequest {
             contentType(ContentType.Application.Json)
+            headers.append("Accept-Language", getLanguageTag())
         }
     }
     val ktorfit: Ktorfit = Ktorfit.Builder()
@@ -67,6 +79,3 @@ object NetworkUtils {
         .httpClient(httpClient)
         .build()
 }
-
-// Sevilla FC: id 559 https://api.football-data.org/v4/teams/559
-// X-Auth-Token: 7424fb04a82940418956b93ce9468f7a

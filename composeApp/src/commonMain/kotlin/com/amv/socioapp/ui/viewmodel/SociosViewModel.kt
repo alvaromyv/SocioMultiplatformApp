@@ -9,14 +9,16 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.amv.socioapp.AppEnvironment
-import com.amv.socioapp.network.repository.SociosRepository
 import com.amv.socioapp.model.Socio
 import com.amv.socioapp.network.model.ResponseError
 import com.amv.socioapp.network.model.ResponseSuccess
 import com.amv.socioapp.network.model.SimpleResponse
-import com.amv.socioapp.network.model.SocioRequest
-import com.amv.socioapp.network.model.SociosResponse
+import com.amv.socioapp.network.model.SocioBodyRequest
 import com.amv.socioapp.network.model.UnSocioResponse
+import com.amv.socioapp.network.repository.SociosRepository
+import com.amv.socioapp.ui.events.SnackbarController
+import com.amv.socioapp.ui.events.SnackbarEvent
+import com.amv.socioapp.ui.events.SnackbarType
 import kotlinx.coroutines.launch
 import kotlinx.serialization.SerializationException
 
@@ -31,41 +33,49 @@ class SociosViewModel(private val sociosRepository: SociosRepository) : ViewMode
     var sociosUiState: SociosUiState by mutableStateOf(SociosUiState.Loading)
         private set
 
-    init {
-        leerTodos()
-    }
+//    fun leerTodos() {
+//        viewModelScope.launch {
+//            sociosUiState = SociosUiState.Loading
+//            sociosUiState = try {
+//                when (val response = sociosRepository.leerTodos()) {
+//                    is ResponseSuccess -> {
+//                        when (val content = response.data) {
+//                            is SociosResponse -> {
+//                                mostrarSnackbar(content.info.message, SnackbarType.INFO)
+//                                SociosUiState.Success(content.result)
+//                            }
+//                            else -> throw SerializationException()
+//                        }
+//                    }
+//                    is ResponseError -> {
+//                        mostrarSnackbar(response.error.message)
+//                        SociosUiState.Error(response.error.message)
+//                    }
+//                    else -> throw SerializationException()
+//                }
+//            } catch (e: Throwable) {
+//                SociosUiState.Exception(e)
+//            }
+//        }
+//    }
 
-    fun leerTodos() {
-        viewModelScope.launch {
-            sociosUiState = SociosUiState.Loading
-            sociosUiState = try {
-                when (val response = sociosRepository.leerTodos()) {
-                    is ResponseSuccess -> {
-                        when (val content = response.data) {
-                            is SociosResponse -> SociosUiState.Success(content.result)
-                            else -> throw SerializationException()
-                        }
-                    }
-                    is ResponseError -> SociosUiState.Error(response.error.message)
-                    else -> throw SerializationException()
-                }
-            } catch (e: Throwable) {
-                SociosUiState.Exception(e)
-            }
-        }
-    }
-
-    fun creaUno(socio: SocioRequest) {
+    fun creaUno(socio: SocioBodyRequest) {
         viewModelScope.launch {
             try {
                 when (val response = sociosRepository.creaUno(socio)) {
                     is ResponseSuccess -> {
                         when (val content = response.data) {
-                            is UnSocioResponse -> leerTodos()
+                            is UnSocioResponse -> {
+                                mostrarSnackbar(content.info.message, SnackbarType.SUCCESS)
+                                // leerTodos()
+                            }
                             else -> throw SerializationException()
                         }
                     }
-                    is ResponseError -> SociosUiState.Error(response.error.message)
+                    is ResponseError -> {
+                        mostrarSnackbar(response.error.message)
+                        SociosUiState.Error(response.error.message)
+                    }
                     else -> throw SerializationException()
                 }
             } catch (e: Throwable) {
@@ -74,17 +84,23 @@ class SociosViewModel(private val sociosRepository: SociosRepository) : ViewMode
         }
     }
 
-    fun modificaUno(id: Int, socio: SocioRequest) {
+    fun modificaUno(id: Int, socio: SocioBodyRequest) {
         viewModelScope.launch {
             try {
                 when (val response = sociosRepository.actualizaUno(id, socio)) {
                     is ResponseSuccess -> {
                         when (val content = response.data) {
-                            is UnSocioResponse -> leerTodos()
+                            is UnSocioResponse -> {
+                                mostrarSnackbar(content.info.message, SnackbarType.SUCCESS)
+                                // leerTodos()
+                            }
                             else -> throw SerializationException()
                         }
                     }
-                    is ResponseError -> SociosUiState.Error(response.error.message)
+                    is ResponseError -> {
+                        mostrarSnackbar(response.error.message)
+                        SociosUiState.Error(response.error.message)
+                    }
                     else -> throw SerializationException()
                 }
             } catch (e: Throwable) {
@@ -99,12 +115,17 @@ class SociosViewModel(private val sociosRepository: SociosRepository) : ViewMode
                 when (val response = sociosRepository.reasignarNumeracion()) {
                     is ResponseSuccess -> {
                         when (val content = response.data) {
-                            is SimpleResponse -> leerTodos()
+                            is SimpleResponse -> {
+                                mostrarSnackbar(content.info.message, SnackbarType.SUCCESS)
+                                // leerTodos()
+                            }
                             else -> throw SerializationException()
                         }
                     }
-
-                    is ResponseError -> SociosUiState.Error(response.error.message)
+                    is ResponseError -> {
+                        mostrarSnackbar(response.error.message)
+                        SociosUiState.Error(response.error.message)
+                    }
                 }
             } catch (e: Throwable) {
                 SociosUiState.Exception(e)
@@ -120,7 +141,8 @@ class SociosViewModel(private val sociosRepository: SociosRepository) : ViewMode
                         when (val content = response.data) {
                             is SimpleResponse -> {
                                 if (content.info.numberOfEntriesDeleted == 1) {
-                                    leerTodos()
+                                    mostrarSnackbar(content.info.message, SnackbarType.SUCCESS)
+                                    // leerTodos()
                                 } else {
                                     throw SerializationException()
                                 }
@@ -128,13 +150,26 @@ class SociosViewModel(private val sociosRepository: SociosRepository) : ViewMode
                             else -> throw SerializationException()
                         }
                     }
-
-                    is ResponseError -> SociosUiState.Error(response.error.message)
+                    is ResponseError -> {
+                        mostrarSnackbar(response.error.message)
+                        SociosUiState.Error(response.error.message)
+                    }
                     else -> throw SerializationException()
                 }
             } catch (e: Throwable) {
                 SociosUiState.Exception(e)
             }
+        }
+    }
+
+    private fun mostrarSnackbar(mensaje: String, tipo: SnackbarType = SnackbarType.ERROR) {
+        viewModelScope.launch {
+            SnackbarController.sendEvent(
+                event = SnackbarEvent(
+                    message = mensaje,
+                    type = tipo
+                )
+            )
         }
     }
 

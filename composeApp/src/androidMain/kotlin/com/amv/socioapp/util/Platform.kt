@@ -1,14 +1,11 @@
 package com.amv.socioapp.util
 
-import android.os.Parcel
-import kotlinx.android.parcel.Parceler
-import kotlinx.android.parcel.TypeParceler
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.LocalDateTime.Companion
-import kotlinx.datetime.toLocalDateTime
+import java.util.Locale
 
 // androidMain/Platform.kt
 actual typealias MyParcelable = android.os.Parcelable
 actual typealias MyIgnoredOnParcel = kotlinx.parcelize.IgnoredOnParcel
 
 actual fun getBaseUrl(): String = "http://10.0.2.2:3000/"
+
+actual fun getLanguageTag(): String =  Locale.getDefault().toLanguageTag()

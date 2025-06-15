@@ -11,6 +11,8 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -21,20 +23,35 @@ import com.amv.socioapp.network.model.AuthRequest
 import com.amv.socioapp.ui.components.MiButton
 import com.amv.socioapp.ui.components.MiLabel
 import com.amv.socioapp.ui.components.MiTextField
+import com.amv.socioapp.ui.events.MiCustomSnackbar
 import com.amv.socioapp.ui.viewmodel.AuthViewModel
 import com.amv.socioapp.ui.viewmodel.InputViewModel
-import com.amv.socioapp.util.responsiveLayout
+import com.amv.socioapp.util.responsiveFillMaxWidth
 
 @Composable
 fun LoginScreen(
     authViewModel: AuthViewModel,
     inputViewModel: InputViewModel = remember { InputViewModel() },
-    onLoginTry: (AuthRequest) -> Unit = { credenciales -> authViewModel.iniciarSesion(credenciales) }
+    onLoginTry: (AuthRequest) -> Unit = { credenciales -> authViewModel.iniciarSesion(credenciales) },
+    snackbarHostState: SnackbarHostState
 ) {
+    Scaffold(
+        snackbarHost = {
+            MiCustomSnackbar(snackbarHostState)
+        }
+    ) { padding ->
+        LoginContent(
+            inputViewModel = inputViewModel,
+            onLoginTry = onLoginTry,
+            modifier = Modifier.padding(padding)
+        )
+    }
+
     LoginContent(
         inputViewModel = inputViewModel,
         onLoginTry = onLoginTry,
     )
+
     /*when (currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass) {
         WindowWidthSizeClass.EXPANDED -> LoginContentExpanded(inputViewModel, onLoginTry)
         WindowWidthSizeClass.MEDIUM -> LoginContentMedium(inputViewModel, onLoginTry)
@@ -57,7 +74,7 @@ private fun LoginContent(
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface,
             ),
-            modifier = Modifier.responsiveLayout()
+            modifier = Modifier.responsiveFillMaxWidth()
         ) {
             Column(
                 modifier = Modifier

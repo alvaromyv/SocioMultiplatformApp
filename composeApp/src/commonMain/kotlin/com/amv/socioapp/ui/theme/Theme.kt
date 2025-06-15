@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import com.amv.socioapp.data.AppThemeMode
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -236,9 +237,15 @@ private val highContrastDarkColorScheme = darkColorScheme(
 
 @Composable
 fun SocioAppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    appTheme: AppThemeMode = AppThemeMode.SYSTEM,
     content: @Composable () -> Unit
 ) {
+    val darkTheme = when(appTheme) {
+        AppThemeMode.SYSTEM -> isSystemInDarkTheme()
+        AppThemeMode.LIGHT -> false
+        AppThemeMode.DARK -> true
+    }
+
     val colorScheme = if (darkTheme) darkScheme else lightScheme
 
     MaterialTheme(

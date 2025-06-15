@@ -7,29 +7,29 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.window.core.layout.WindowWidthSizeClass
 
 @Composable
-fun Modifier.responsiveLayout(windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo()): Modifier {
-    val adaptiveWindowSizeClass = windowAdaptiveInfo.windowSizeClass
-
-    return when (adaptiveWindowSizeClass.windowWidthSizeClass) {
-        WindowWidthSizeClass.COMPACT -> this.fillMaxWidth(0.9f).scale(0.9f)
-        WindowWidthSizeClass.MEDIUM -> this.fillMaxWidth(0.75f).scale(1f)
-        WindowWidthSizeClass.EXPANDED -> this.fillMaxWidth(0.6f).scale(1.10f)
-        else -> this.fillMaxWidth().scale(1f)
+fun Modifier.responsiveFillMaxWidth(windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo()): Modifier {
+    return when (getLayoutType(windowAdaptiveInfo)) {
+        WindowWidthSizeClass.COMPACT -> this.fillMaxWidth(0.8f)
+        WindowWidthSizeClass.MEDIUM -> this.fillMaxWidth(0.6f)
+        WindowWidthSizeClass.EXPANDED -> this.fillMaxWidth(0.4f)
+        else -> this.fillMaxWidth()
     }
 }
 
 @Composable
 fun responsiveNavigationSuiteType(windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo()): NavigationSuiteType {
-    val adaptiveWindowSizeClass = windowAdaptiveInfo.windowSizeClass
-
-    return when (adaptiveWindowSizeClass.windowWidthSizeClass) {
+    return when (getLayoutType(windowAdaptiveInfo)) {
         WindowWidthSizeClass.EXPANDED -> NavigationSuiteType.NavigationDrawer
         WindowWidthSizeClass.MEDIUM -> NavigationSuiteType.NavigationRail
         WindowWidthSizeClass.COMPACT -> NavigationSuiteType.NavigationBar
         else -> NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(windowAdaptiveInfo)
     }
+}
+
+@Composable
+fun getLayoutType(windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo()): WindowWidthSizeClass {
+    return windowAdaptiveInfo.windowSizeClass.windowWidthSizeClass
 }

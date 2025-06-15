@@ -19,6 +19,7 @@ interface AppContainer {
     val usuariosRepository: UsuariosRepository
     val authRepository: AuthRepository
     val sessionManager: SessionManager
+    val ajustesManager: AjustesManager
 }
 
 object DefaultAppContainer : AppContainer {
@@ -27,6 +28,7 @@ object DefaultAppContainer : AppContainer {
     private val servicioAuth: AuthService by lazy { ktorfit.createAuthService() }
 
     override val sessionManager: SessionManager = SessionManager
+    override val ajustesManager: AjustesManager = AjustesManager
 
     override val sociosRepository: SociosRepository by lazy { NetworkSociosRepository(servicioSocios) }
     override val usuariosRepository: UsuariosRepository by lazy {
@@ -34,6 +36,7 @@ object DefaultAppContainer : AppContainer {
             servicioUsuarios
         )
     }
+
     override val authRepository: AuthRepository by lazy { NetworkAuthRepository(servicioAuth) }
 }
 

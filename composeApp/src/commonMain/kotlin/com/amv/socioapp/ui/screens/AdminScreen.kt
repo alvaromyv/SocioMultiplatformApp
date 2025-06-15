@@ -8,12 +8,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
@@ -32,6 +29,9 @@ import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.amv.socioapp.model.Usuario
+import com.amv.socioapp.network.model.SocioRequest
+import com.amv.socioapp.network.model.UsuarioRequest
+import com.amv.socioapp.ui.components.DetailPaneContent
 import com.amv.socioapp.ui.components.ExceptionScreen
 import com.amv.socioapp.ui.components.LoadingScreen
 import com.amv.socioapp.ui.viewmodel.UsuariosUiState
@@ -41,25 +41,34 @@ import kotlinx.coroutines.launch
 @Composable
 fun AdminScreen(
     usuariosUiState: UsuariosUiState,
-    onReintentarClick: () -> Unit,
+    onReintentarClick: () -> Unit = {},
+    onEliminarClick: (Int) -> Unit = {},
+    onEditar: (UsuarioRequest?, SocioRequest?) -> Unit = { _, _ -> }
 ) {
     when(val estado = usuariosUiState) {
-        is UsuariosUiState.Success -> AdminListDetailPaneScaffold(estado.usuarios)
+        is UsuariosUiState.Success -> {
+            AdminListDetailPaneScaffold(
+                usuarios = estado.usuarios,
+                onEliminarClick = onEliminarClick,
+                onEditar = onEditar
+            )
+        }
         UsuariosUiState.Loading -> LoadingScreen()
         is UsuariosUiState.Error -> {}
         is UsuariosUiState.Exception -> ExceptionScreen { onReintentarClick }
     }
 }
 
-
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalComposeUiApi::class)
 @Composable
 private fun AdminListDetailPaneScaffold(
     usuarios: List<Usuario>,
+    onEliminarClick: (Int) -> Unit = {},
+    onEditar: (UsuarioRequest?, SocioRequest?) -> Unit = { _, _ -> }
 ) {
     val scope = rememberCoroutineScope()
     val scaffoldNavigator = rememberListDetailPaneScaffoldNavigator<Usuario>()
-    val selectedItem = scaffoldNavigator.currentDestination?.contentKey
+    var selectedItem = scaffoldNavigator.currentDestination?.contentKey
 
     ListDetailPaneScaffold(
         directive = scaffoldNavigator.scaffoldDirective,
@@ -81,8 +90,21 @@ private fun AdminListDetailPaneScaffold(
                 selectedItem?.let { item ->
                     DetailPaneContent(
                         usuario = item,
-                        onEliminarClick = { /*vm.borraUno(it)*/ },
-                        onEditarClick = { /*vm.leeUno(it)*/ }
+                        onEliminarClick = { id ->
+                            onEliminarClick(id)
+                            selectedItem = null
+                            scope.launch {
+                                scaffoldNavigator.navigateTo(ListDetailPaneScaffoldRole.List)
+                            }
+                        },
+                        onEditarClick = { usuario, socio ->
+                            onEditar(usuario, socio)
+                            selectedItem = null
+                            scope.launch {
+                                scaffoldNavigator.navigateTo(ListDetailPaneScaffoldRole.List)
+                            }
+                        },
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
             }
@@ -131,8 +153,8 @@ private fun ListPaneContent(
                     },
                     leadingContent = {
                         PerfilAvatar(
-                            avatarLink = item.avatarUrl,
-                            contentDescription = item.obtenerNombreCompleto()
+                            avatarUrl = item.avatarUrl,
+                            contentDescription = item.obtenerNombreCompleto(),
                         )
                     },
                     modifier = Modifier
@@ -142,25 +164,6 @@ private fun ListPaneContent(
                 )
             }
         }
-    }
-}
-
-
-
-@Composable
-private fun DetailPaneContent(
-    usuario: Usuario,
-    onEliminarClick: (Int) -> Unit,
-    onEditarClick: (Int) -> Unit
-) {
-    ElevatedCard(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(12.dp),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)
-    ) {
-
     }
 }
 

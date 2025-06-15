@@ -30,8 +30,9 @@ object SessionManager {
     }
 
     fun obtenerToken(): String? {
-        return if (comprobarSesion()) {
-            settings.getString(BEARER_TOKEN, "")
+        val token = settings.getString(BEARER_TOKEN, "")
+        return if (comprobarSesion() && token.isNotEmpty()) {
+            token
         } else {
             null
         }

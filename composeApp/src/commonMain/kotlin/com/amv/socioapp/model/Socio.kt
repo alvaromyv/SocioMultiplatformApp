@@ -17,16 +17,12 @@ import kotlinx.serialization.Serializable
 data class Socio(
     val id: Int,
     @SerialName("n_socio") val nSocio: Int,
-    @SerialName("fecha_nacimiento") private val _fechaNacimiento: String,
     @SerialName("fecha_antiguedad") private val _fechaAntiguedad: String,
     val categoria: Categoria,
     @SerialName("abonado") val esAbonado: Boolean,
     @SerialName("usuario_id") internal val usuarioId: Int,
     val usuario: Usuario? = null,
 ) : MyParcelable {
-    val fechaNacimiento: LocalDateTime
-        get() = Instant.parse(_fechaNacimiento).toLocalDateTime(TimeZone.UTC)
-
     val fechaAntiguedad: LocalDateTime
         get() = Instant.parse(_fechaAntiguedad).toLocalDateTime(TimeZone.UTC)
 
