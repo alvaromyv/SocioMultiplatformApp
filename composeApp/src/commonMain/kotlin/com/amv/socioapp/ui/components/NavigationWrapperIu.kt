@@ -46,19 +46,29 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.amv.socioapp.data.SessionManager
+import com.amv.socioapp.model.Rol
 import com.amv.socioapp.navigation.Agrega
 import com.amv.socioapp.navigation.Busqueda
 import com.amv.socioapp.navigation.TopLevelDestination
 import com.amv.socioapp.ui.events.MiCustomSnackbar
+import com.amv.socioapp.ui.viewmodel.AuthUiState
+import com.amv.socioapp.ui.viewmodel.AuthViewModel
 import com.amv.socioapp.ui.viewmodel.SociosViewModel
 import com.amv.socioapp.ui.viewmodel.UsuariosViewModel
 import com.amv.socioapp.util.responsiveNavigationSuiteType
+import sociomultiplatformapp.composeapp.generated.resources.Res
+import sociomultiplatformapp.composeapp.generated.resources.actualizar
+import sociomultiplatformapp.composeapp.generated.resources.agrega_titulo
+import sociomultiplatformapp.composeapp.generated.resources.ajustes
+import sociomultiplatformapp.composeapp.generated.resources.buscar
+import com.hyperether.resources.stringResource
 
 @Composable
 fun SocioNavegationWrapperUI(
     navController: NavController,
     sociosViewModel: SociosViewModel,
     usuariosViewModel: UsuariosViewModel,
+    authViewModel: AuthViewModel,
     snackbarHostState: SnackbarHostState,
     socioNavHost: @Composable () -> Unit = {}
 ) {
@@ -66,50 +76,64 @@ fun SocioNavegationWrapperUI(
     val currentRoute = navBackStackEntry.value?.destination?.route
     var mostrarDialogoAjustes by rememberSaveable { mutableStateOf(false) }
 
+    var esAdmin by mutableStateOf(false)
+
+    when(val estado = authViewModel.authUiState) {
+        is AuthUiState.Error -> SessionManager.cerrarSesion()
+        is AuthUiState.Exception -> SessionManager.cerrarSesion()
+        AuthUiState.Loading -> LoadingScreen()
+        is AuthUiState.Success -> esAdmin = estado.sesion.usuario.rol == Rol.ADMINISTRADOR
+    }
+
+
     if (mostrarDialogoAjustes) {
         AjustesDialog(
             onDismiss = { mostrarDialogoAjustes = false },
             onCerrarSesion = { SessionManager.cerrarSesion() },
-            onReasignarNumeracion = { sociosViewModel.reasignarNumeracion() }
+            onReasignarNumeracion = { sociosViewModel.reasignarNumeracion(onSuccess = { usuariosViewModel.leerTodos() }) },
+            esAdmin = esAdmin
         )
     }
 
     NavigationSuiteScaffoldFab(
-        layoutType = responsiveNavigationSuiteType(),
+        layoutType = responsiveNavigationSuiteType(hayNavegacion = esAdmin),
         navigationSuiteItems = {
-            TopLevelDestination.entries
-                .filter { it.visibleNavigation }
-                .forEach { item ->
-                val isSelected = currentRoute == item.route
-
-                item(
-                    icon = {
-                        NavigationIcon(
-                            isSelected = isSelected,
-                            selectedIcon = item.selectedIcon,
-                            unselectedIcon = item.unselectedIcon,
-                            contentDescription = item.label,
+                TopLevelDestination.entries
+                    .filter { it.visibleNavigation }
+                    .forEach { item ->
+                        val isSelected = currentRoute == item.route
+                        item(
+                            icon = {
+                                NavigationIcon(
+                                    isSelected = isSelected,
+                                    selectedIcon = item.selectedIcon,
+                                    unselectedIcon = item.unselectedIcon,
+                                    contentDescription = stringResource(item.title),
+                                )
+                            },
+                            label = { Text(stringResource(item.title)) },
+                            selected = isSelected,
+                            onClick = { navController.navigate(item.route) }
                         )
-                    },
-                    label = { Text(item.label) },
-                    selected = isSelected,
-                    onClick = { navController.navigate(item.route) }
-                )
-            }
+                    }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { navController.navigate(Agrega) }) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = "Agregar")
+            if(esAdmin) {
+                FloatingActionButton(onClick = { navController.navigate(Agrega) }) {
+                    Icon(imageVector = Icons.Filled.Add, contentDescription = stringResource(Res.string.agrega_titulo))
+                }
             }
         },
         extendedFloatingActionButton = {
-            ExtendedFloatingActionButton(
-                icon = {
-                    Icon(imageVector = Icons.Filled.Add, contentDescription = "Agregar")
-                },
-                text = { Text("Agregar") },
-                onClick = { navController.navigate(Agrega) }
-            )
+            if(esAdmin) {
+                ExtendedFloatingActionButton(
+                    icon = {
+                        Icon(imageVector = Icons.Filled.Add, contentDescription = stringResource(Res.string.agrega_titulo))
+                    },
+                    text = { Text(stringResource(Res.string.agrega_titulo)) },
+                    onClick = { navController.navigate(Agrega) }
+                )
+            }
         }
     ) {
         Scaffold(
@@ -134,17 +158,19 @@ fun SocioNavegationWrapperUI(
 
                 if (destination != null) {
                     shouldShowTopAppBar = true
+                    val title = stringResource(destination.title)
                     SocioTopAppBar(
-                        title = destination.label,
+                        title = title,
                         navigationIcon = Icons.Filled.Search,
-                        navigationIconContentDescription = "Buscar",
+                        navigationIconContentDescription = stringResource(Res.string.buscar),
                         actualizarIcon = Icons.Filled.Refresh,
-                        actualizarIconContentDescription = "Actualizar",
+                        actualizarIconContentDescription = stringResource(Res.string.actualizar),
                         actionIcon = Icons.Filled.Settings,
-                        actionIconContentDescription = "Ajustes",
+                        actionIconContentDescription = stringResource(Res.string.ajustes),
                         onNavigationClick = { navController.navigate(Busqueda) },
                         onActualizarClick = { usuariosViewModel.leerTodos() },
-                        onActionClick = { mostrarDialogoAjustes = true }
+                        onActionClick = { mostrarDialogoAjustes = true },
+                        esAdmin = esAdmin
                     )
                 }
 

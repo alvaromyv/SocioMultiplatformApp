@@ -1,7 +1,9 @@
 package com.amv.socioapp.ui.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -42,6 +44,10 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import com.hyperether.resources.stringResource
+import sociomultiplatformapp.composeapp.generated.resources.Res
+import sociomultiplatformapp.composeapp.generated.resources.cancelar
+import sociomultiplatformapp.composeapp.generated.resources.seleccionar
 
 @Composable
 fun MiTextField(
@@ -199,6 +205,7 @@ fun MiTextButton(
 @Composable
 inline fun <reified T> SeleccionButtonRow(
     valor: T,
+    label: String? = null,
     crossinline onValorChange: (T) -> Unit,
     modifier: Modifier,
     enabled: Boolean = true
@@ -206,21 +213,30 @@ inline fun <reified T> SeleccionButtonRow(
     val elementos = enumValues<T>().toList()
     var seleccionado = elementos.indexOf(valor)
 
-    SingleChoiceSegmentedButtonRow(modifier = modifier) {
-        elementos.forEachIndexed { indice, valor ->
-            SegmentedButton(
-                shape = SegmentedButtonDefaults.itemShape(
-                    index = indice,
-                    count = elementos.size
-                ),
-                onClick = {
-                    seleccionado = indice
-                    onValorChange(valor)
-                },
-                enabled = enabled,
-                selected = indice == seleccionado,
-                label = { Text(valor.toString()) }
+    Column(modifier = modifier) {
+        label?.let {
+            Text(
+                text = it,
+                style = MaterialTheme.typography.labelLarge,
+                modifier = Modifier.padding(bottom = 4.dp)
             )
+        }
+        SingleChoiceSegmentedButtonRow(modifier = modifier) {
+            elementos.forEachIndexed { indice, valor ->
+                SegmentedButton(
+                    shape = SegmentedButtonDefaults.itemShape(
+                        index = indice,
+                        count = elementos.size
+                    ),
+                    onClick = {
+                        seleccionado = indice
+                        onValorChange(valor)
+                    },
+                    enabled = enabled,
+                    selected = indice == seleccionado,
+                    label = { Text(valor.toString()) }
+                )
+            }
         }
     }
 }
@@ -274,12 +290,12 @@ private fun SeleccionarFecha(
                 onSeleccionarFecha(estadoDatePicker.selectedDateMillis)
                 onRechazar()
             }) {
-                Text("Seleccionar")
+                Text(stringResource(Res.string.seleccionar))
             }
         },
         dismissButton = {
             TextButton(onClick = onRechazar) {
-                Text(text = "Cancelar")
+                Text(text = stringResource(Res.string.cancelar))
             }
         },
     ) {

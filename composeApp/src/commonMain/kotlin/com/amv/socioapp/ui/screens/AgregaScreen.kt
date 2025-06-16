@@ -14,6 +14,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.amv.socioapp.network.model.SocioBodyRequest
+import com.amv.socioapp.network.model.SocioRequest
+import com.amv.socioapp.network.model.UsuarioBodyRequest
+import com.amv.socioapp.network.model.UsuarioRequest
 import com.amv.socioapp.ui.components.DetailPaneContent
 import com.amv.socioapp.ui.components.MiButton
 import com.amv.socioapp.ui.components.MiDialogoConfirmacion
@@ -22,18 +26,22 @@ import com.amv.socioapp.ui.viewmodel.InputViewModel
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AgregaScreen(
-    viewModel: InputViewModel = remember { InputViewModel() }
+    viewModel: InputViewModel = remember { InputViewModel() },
+    onCrearClick: (UsuarioRequest, SocioRequest?) -> Unit = { _, _ -> }
 ) {
+    var edicion by remember { mutableStateOf(true) }
+
     DetailPaneContent(
         Modifier.fillMaxSize(),
         viewModel.construirUsuarioVacio(),
         viewModel,
-        onEliminarClick = { },
-        onEditarClick = { _, _ -> }
+        edicion = edicion,
+        creacion = true,
+        onEdicionChange = { edicion = it },
     ) { formValidado, onConfirmarClick, _, onEditarClick, onEliminarClick, onReiniciarClick, edicion ->
         OpcionesCreacion(
             formValidado,
-            {  },
+            { onCrearClick(viewModel.construirUsuario(), viewModel.construirSocio()) },
             { viewModel.reiniciarValores() }
         )
     }
@@ -44,7 +52,7 @@ fun AgregaScreen(
 fun OpcionesCreacion(
     formValidado: Boolean,
     onConfirmarClick: () -> Unit = {},
-    onReiniciarClcik: () -> Unit = {},
+    onReiniciarClick: () -> Unit = {},
 ) {
     var abiertoDialogoConfirmar by remember { mutableStateOf(false) }
 
@@ -60,7 +68,7 @@ fun OpcionesCreacion(
         )
         MiButton(
             accion = "Reiniciar",
-            onClick = onReiniciarClcik,
+            onClick = onReiniciarClick,
             modifier = Modifier.weight(1f)
         )
     }

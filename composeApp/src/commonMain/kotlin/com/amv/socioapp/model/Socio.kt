@@ -44,10 +44,10 @@ data class Socio(
 }
 
 @MyParcelize
-enum class Categoria(val descripcion: String, val cuota: Double): MyParcelable {
-    @SerialName("infantil") INFANTIL("Menor de 12 años", 10.0),
-    @SerialName("juvenil") JUVENIL("Entre 12 y 17 años", 15.0),
-    @SerialName("adulto") ADULTO("Entre 18 y 64 años", 20.0),
-    @SerialName("senior") SENIOR("65 años o más", 12.0),
+enum class Categoria(): MyParcelable {
+    @SerialName("infantil") INFANTIL,
+    @SerialName("juvenil") JUVENIL,
+    @SerialName("adulto") ADULTO,
+    @SerialName("senior") SENIOR,
 }
 

@@ -14,3 +14,5 @@ expect annotation class MyIgnoredOnParcel()
 expect fun getBaseUrl(): String
 
 expect fun getLanguageTag(): String
+
+expect fun cambiarIdioma(languageTag: String)

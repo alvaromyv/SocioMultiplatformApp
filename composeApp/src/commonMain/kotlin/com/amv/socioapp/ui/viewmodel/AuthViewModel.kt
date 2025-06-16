@@ -10,16 +10,21 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.amv.socioapp.AppEnvironment
 import com.amv.socioapp.data.SessionManager
+import com.amv.socioapp.model.Usuario
 import com.amv.socioapp.network.model.AuthDataResponse
 import com.amv.socioapp.network.model.AuthRequest
 import com.amv.socioapp.network.model.AuthResponse
 import com.amv.socioapp.network.model.ResponseError
 import com.amv.socioapp.network.model.ResponseSuccess
+import com.amv.socioapp.network.model.UnUsuarioResponse
 import com.amv.socioapp.network.model.UsuarioBodyRequest
 import com.amv.socioapp.network.repository.AuthRepository
+import com.amv.socioapp.network.repository.UsuariosRepository
 import com.amv.socioapp.ui.events.SnackbarController
 import com.amv.socioapp.ui.events.SnackbarEvent
 import com.amv.socioapp.ui.events.SnackbarType
+import com.amv.socioapp.util.subirAvatar
+import io.github.vinceglb.filekit.PlatformFile
 import kotlinx.coroutines.launch
 import kotlinx.serialization.SerializationException
 
@@ -30,28 +35,34 @@ sealed interface AuthUiState {
     object Loading : AuthUiState
 }
 
-class AuthViewModel(private val authRepository: AuthRepository, private val sessionManager: SessionManager) : ViewModel() {
+class AuthViewModel(private val authRepository: AuthRepository, private val usuariosRepository: UsuariosRepository, private val sessionManager: SessionManager) : ViewModel() {
     var authUiState: AuthUiState by mutableStateOf(AuthUiState.Loading)
         private set
 
     val sesionValida = sessionManager.sesion
 
-    fun registrarUsuario(usuario: UsuarioBodyRequest){
+    init {
+        if(sesionValida.value) {
+            recuperarSesion()
+        }
+    }
+
+    fun registrarUsuario(usuario: UsuarioBodyRequest, avatar: PlatformFile? = null, onSuccess: (id: Int) -> Unit = { _ -> },){
         viewModelScope.launch {
-            authUiState = try {
+            try {
                 when(val response = authRepository.registrarUsuario(usuario)) {
                     is ResponseSuccess -> {
                         when (val content = response.data) {
                             is AuthResponse -> {
+                                if(avatar != null) subirAvatar(usuariosRepository, content.result.usuario.id, avatar)
+                                onSuccess(content.result.usuario.id)
                                 mostrarSnackbar(response.data.info.message, SnackbarType.SUCCESS)
-                                AuthUiState.Success(content.result)
                             }
                             else -> throw SerializationException()
                         }
                     }
                     is ResponseError -> {
                         mostrarSnackbar(response.error.message)
-                        AuthUiState.Error(response.error.message)
                     }
                     else -> throw SerializationException()
                 }
@@ -69,7 +80,7 @@ class AuthViewModel(private val authRepository: AuthRepository, private val sess
                         when (val content = response.data) {
                             is AuthResponse -> {
                                 val sesion = content.result
-                                sessionManager.nuevaSesion(sesion.token, sesion.expiraEn)
+                                sessionManager.nuevaSesion(sesion.usuario.id, sesion.token, sesion.expiraEn)
                                 mostrarSnackbar(response.data.info.message, SnackbarType.SUCCESS)
                                 AuthUiState.Success(content.result)
                             }
@@ -89,6 +100,31 @@ class AuthViewModel(private val authRepository: AuthRepository, private val sess
         }
     }
 
+    fun recuperarSesion() {
+        viewModelScope.launch {
+            authUiState = try {
+                when(val response = usuariosRepository.leePerfil()) {
+                    is ResponseSuccess -> {
+                        when (val content = response.data) {
+                            is UnUsuarioResponse -> {
+                                mostrarSnackbar(response.data.info.message, SnackbarType.SUCCESS)
+                                AuthUiState.Success(AuthDataResponse(usuario = content.result, token = "", expiraEn = 0))
+                            }
+                            else -> throw SerializationException()
+                        }
+                    }
+                    is ResponseError -> {
+                        mostrarSnackbar(response.error.message)
+                        AuthUiState.Error(response.error.message)
+                    }
+                    else -> throw SerializationException()
+                }
+            } catch (e: Throwable) {
+                throw e
+                AuthUiState.Exception(e)
+            }
+        }
+    }
     private fun mostrarSnackbar(mensaje: String, tipo: SnackbarType = SnackbarType.ERROR) {
         viewModelScope.launch {
             SnackbarController.sendEvent(
@@ -105,7 +141,8 @@ class AuthViewModel(private val authRepository: AuthRepository, private val sess
             initializer {
                 val authRepository = AppEnvironment.contenedor.authRepository
                 val sessionManager = AppEnvironment.contenedor.sessionManager
-                AuthViewModel(authRepository = authRepository, sessionManager = sessionManager)
+                val usuariosRepository = AppEnvironment.contenedor.usuariosRepository
+                AuthViewModel(authRepository = authRepository, usuariosRepository = usuariosRepository, sessionManager = sessionManager)
             }
         }
     }

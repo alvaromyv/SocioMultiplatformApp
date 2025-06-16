@@ -20,6 +20,7 @@ import com.amv.socioapp.network.repository.UsuariosRepository
 import com.amv.socioapp.ui.events.SnackbarController
 import com.amv.socioapp.ui.events.SnackbarEvent
 import com.amv.socioapp.ui.events.SnackbarType
+import com.amv.socioapp.util.subirAvatar
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.name
 import io.github.vinceglb.filekit.readBytes
@@ -44,14 +45,13 @@ class UsuariosViewModel(private val usuariosRepository: UsuariosRepository) : Vi
     var seleccionado by mutableStateOf<Usuario?>(null)
         internal set
 
+    var perfilSesion by mutableStateOf<Usuario?>(null)
+        internal set
+
     var searchQuery by mutableStateOf<String>("")
 
     var buscados by mutableStateOf<List<Usuario>>(emptyList())
         private set
-
-    init {
-        leerTodos()
-    }
 
     fun leerTodos(){
         viewModelScope.launch {
@@ -61,7 +61,6 @@ class UsuariosViewModel(private val usuariosRepository: UsuariosRepository) : Vi
                     is ResponseSuccess -> {
                         when (val content = response.data) {
                             is UsuariosResponse -> {
-                                mostrarSnackbar(content.info.message, SnackbarType.INFO)
                                 UsuariosUiState.Success(content.result)
                             }
                             else -> throw SerializationException()
@@ -102,6 +101,29 @@ class UsuariosViewModel(private val usuariosRepository: UsuariosRepository) : Vi
         }
     }
 
+    fun leePerfil() {
+        viewModelScope.launch {
+            try {
+                when (val response = usuariosRepository.leePerfil()) {
+                    is ResponseSuccess -> {
+                        when (val content = response.data) {
+                            is UnUsuarioResponse -> {
+                                mostrarSnackbar(content.info.message, SnackbarType.SUCCESS)
+                                seleccionado = content.result
+                                leerTodos()
+                            }
+                            else -> throw SerializationException()
+                        }
+                    }
+                    is ResponseError -> UsuariosUiState.Error(response.error.message)
+                    else -> throw SerializationException()
+                }
+            } catch (e: Throwable) {
+                UsuariosUiState.Exception(e)
+            }
+        }
+    }
+
     fun buscarUsuario(query: String) {
         viewModelScope.launch {
             try {
@@ -122,14 +144,9 @@ class UsuariosViewModel(private val usuariosRepository: UsuariosRepository) : Vi
                     else -> throw SerializationException()
                 }
             } catch (e: Throwable) {
-                throw e
                 UsuariosUiState.Exception(e)
             }
         }
-    }
-
-    fun creaUno(usuario: UsuarioBodyRequest) {
-
     }
 
     fun modificaUno(id: Int, usuario: UsuarioBodyRequest, avatar: PlatformFile? = null) {
@@ -140,7 +157,7 @@ class UsuariosViewModel(private val usuariosRepository: UsuariosRepository) : Vi
                         when (val content = response.data) {
                             is UnUsuarioResponse -> {
                                 mostrarSnackbar(content.info.message, SnackbarType.SUCCESS)
-                                if(avatar != null) subirAvatar(id, avatar)
+                                if(avatar != null) subirAvatar(usuariosRepository, id, avatar)
                                 leerTodos()
                             }
                             else -> throw SerializationException()
@@ -148,38 +165,6 @@ class UsuariosViewModel(private val usuariosRepository: UsuariosRepository) : Vi
                     }
                     is ResponseError -> {
                         mostrarSnackbar(response.error.message)
-                        UsuariosUiState.Error(response.error.message)
-                    }
-                    else -> throw SerializationException()
-                }
-            } catch (e: Throwable) {
-                throw e
-                UsuariosUiState.Exception(e)
-            }
-        }
-    }
-
-    fun subirAvatar(id: Int, avatar: PlatformFile) {
-        viewModelScope.launch {
-            val avatarBytes = avatar.readBytes()
-            val parts = formData {
-                append("avatar", avatarBytes, Headers.build {
-                    append(HttpHeaders.ContentType, "image/png")
-                    append(HttpHeaders.ContentDisposition, "filename=${avatar.name}")
-                })
-            }
-
-            try {
-                when(val response = usuariosRepository.subirAvatar(id, MultiPartFormDataContent(parts))) {
-                    is ResponseSuccess -> {
-                        when (val content = response.data) {
-                            is SimpleResponse -> {
-                            //leerTodos()
-                            }
-                            else -> throw SerializationException()
-                        }
-                    }
-                    is ResponseError -> {
                         UsuariosUiState.Error(response.error.message)
                     }
                     else -> throw SerializationException()

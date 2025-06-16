@@ -23,6 +23,7 @@ ktorfit = "2.5.2"
 uiBackhandler = "1.8.1"
 coil = "3.2.0"
 filekit = "0.10.0-beta04"
+hyperether-localization = "1.1.1"
 
 [libraries]
 adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "adaptive" }
@@ -51,6 +52,7 @@ filekit-coil = { module = "io.github.vinceglb:filekit-coil", version.ref = "file
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor"}
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" } # Android
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" } # Web
 kotlin-serialization = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
@@ -74,3 +76,4 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize",  version.ref = "kotlin"  }
+hyperether-localization = { id = "com.hyperether.localization", version.ref = "hyperether-localization"}

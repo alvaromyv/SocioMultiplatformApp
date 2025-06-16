@@ -15,6 +15,7 @@ import com.amv.socioapp.network.model.UsuarioBodyRequest
 import com.amv.socioapp.network.model.UsuarioRequest
 import io.github.vinceglb.filekit.PlatformFile
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
@@ -197,6 +198,7 @@ class InputViewModel : ViewModel() {
     fun cargarSocio(socio: Socio) {
         haySocio = true
         socioFormState = SocioFormState(
+            id = socio.id,
             categoria = socio.categoria,
             fechaAntiguedad = socio.fechaAntiguedad,
             abonado = socio.esAbonado,
@@ -216,7 +218,7 @@ class InputViewModel : ViewModel() {
             rol = usuario.rol
         )
         actualizarHaySocio(usuario.socio != null)
-        if(usuario.socio != null) { cargarSocio(usuario.socio) }
+        if(haySocio) { cargarSocio(usuario.socio!!) }
     }
 
     @OptIn(FormatStringsInDatetimeFormats::class)
@@ -225,7 +227,7 @@ class InputViewModel : ViewModel() {
             id = socioFormState.id,
             socio = SocioBodyRequest(
                 categoria = socioFormState.categoria,
-                fechaAntiguedad = socioFormState.fechaAntiguedad.format(LocalDateTime.Format { byUnicodePattern("yyyy-MM-dd") }),
+                fechaAntiguedad = socioFormState.fechaAntiguedad.date.toString()/*.format( LocalDate.Format { byUnicodePattern("yyyy-MM-dd") })*/,
                 abonado = socioFormState.abonado,
                 usuarioId = socioFormState.usuarioId ?: usuarioFormState.id
             )
@@ -246,14 +248,13 @@ class InputViewModel : ViewModel() {
             avatar = usuarioFormState.avatarUri
         )
     }
-
     fun construirUsuarioVacio(): Usuario {
         return Usuario(
             id = 0,
-            avatarUrl = "",
+            avatarUrl = "uploads/default-avatar.webp",
             nombre = "",
-            apellidos = null,
-            telefono = null,
+            apellidos = "",
+            telefono = "",
             email = "",
             password = "",
             rol = Rol.USUARIO,

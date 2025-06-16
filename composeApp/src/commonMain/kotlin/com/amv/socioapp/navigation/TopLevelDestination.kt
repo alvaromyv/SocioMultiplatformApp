@@ -12,26 +12,33 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.serializer
+import org.jetbrains.compose.resources.StringResource
+import sociomultiplatformapp.composeapp.generated.resources.Res
+import sociomultiplatformapp.composeapp.generated.resources.administracion_titulo
+import sociomultiplatformapp.composeapp.generated.resources.agrega_titulo
+import sociomultiplatformapp.composeapp.generated.resources.mi_perfil_titulo
 
 enum class TopLevelDestination(
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
-//    @StringRes val iconTextId: Int,
-//    @StringRes val titleTextId: Int,
-    val label: String,
+    val title: StringResource,
     val route: String,
     val visibleNavigation: Boolean = true
 ) {
-    ADMIN(Icons.Filled.Group, Icons.Outlined.Group, "Administración", getSerialName<Admin>()),
-    PERFIL(Icons.Filled.Person, Icons.Outlined.Person, "Mi Perfil", getSerialName<Perfil>()),
-    AGREGAR(Icons.Filled.Edit, Icons.Outlined.Edit, "Agregar", getSerialName<Agrega>(), visibleNavigation = false)
+    ADMIN(Icons.Filled.Group, Icons.Outlined.Group, Res.string.administracion_titulo, getSerialName<Admin>()),
+    MI_PERFIL(Icons.Filled.Person, Icons.Outlined.Person, Res.string.mi_perfil_titulo, getSerialName<MiPerfil>()),
+    PERFIL(Icons.Filled.Person, Icons.Outlined.Person, Res.string.mi_perfil_titulo, getSerialName<Perfil>(), visibleNavigation = false),
+    AGREGAR(Icons.Filled.Edit, Icons.Outlined.Edit, Res.string.agrega_titulo, getSerialName<Agrega>(), visibleNavigation = false)
 }
 
 @Serializable @SerialName("administracion")
 object Admin
 
 @Serializable @SerialName("perfil")
-object Perfil
+object MiPerfil
+
+@Serializable @SerialName("perfil")
+data class Perfil(val usuarioId: Int)
 
 @Serializable @SerialName("busqueda")
 object Busqueda

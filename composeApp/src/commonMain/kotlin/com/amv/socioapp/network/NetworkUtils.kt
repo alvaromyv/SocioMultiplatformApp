@@ -20,7 +20,13 @@ import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.logging.DEFAULT
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
@@ -62,6 +68,11 @@ object NetworkUtils {
                 }
             }
         }
+        install(Logging) {
+            logger = Logger.SIMPLE
+            level = LogLevel.BODY
+            sanitizeHeader { header -> header == HttpHeaders.Authorization }
+        }
         HttpResponseValidator {
            validateResponse { response ->
                if(response.status.value == 401 || response.status.value == 403) {
@@ -74,8 +85,10 @@ object NetworkUtils {
             headers.append("Accept-Language", getLanguageTag())
         }
     }
+
     val ktorfit: Ktorfit = Ktorfit.Builder()
         .baseUrl(BASE_URL)
         .httpClient(httpClient)
         .build()
 }
+

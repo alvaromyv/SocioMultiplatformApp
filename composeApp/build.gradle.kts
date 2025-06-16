@@ -11,7 +11,9 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.ktorfit)
-    alias(libs.plugins.kotlin.parcelize)}
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.hyperether.localization)
+}
 
 kotlin {
     androidTarget {
@@ -43,6 +45,13 @@ kotlin {
     }
     
     sourceSets {
+        sourceSets["commonMain"].kotlin.srcDirs(
+            File(
+                layout.buildDirectory.get().asFile.path,
+                "generated/compose/resourceGenerator/kotlin/commonCustomResClass"
+            )
+        )
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
@@ -66,6 +75,7 @@ kotlin {
             implementation(compose.materialIconsExtended)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.logging)
             implementation(libs.ktor.client.auth)
             implementation(libs.kotlin.serialization)
             implementation(libs.ktorfit.lib)

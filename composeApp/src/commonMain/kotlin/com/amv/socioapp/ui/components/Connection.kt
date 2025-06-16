@@ -16,6 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.hyperether.resources.stringResource
+import sociomultiplatformapp.composeapp.generated.resources.*
 
 @Composable
 fun LoadingScreen() {
@@ -33,10 +35,10 @@ fun ExceptionScreen(onReintentarClick: () -> Unit) {
     ) {
         Icon(
             imageVector = Icons.Filled.NetworkLocked,
-            contentDescription = "Error de red. Inténtalo de nuevo.",
+            contentDescription = stringResource(Res.string.error_red),
             modifier = Modifier.width(128.dp)
         )
-        Text(text = "Error de red. Inténtalo de nuevo.", modifier = Modifier.padding(16.dp))
-        MiButton(accion = "Reintentar", onClick = onReintentarClick, modifier = Modifier.wrapContentSize())
+        Text(text = stringResource(Res.string.error_red), modifier = Modifier.padding(16.dp))
+        MiButton(accion = stringResource(Res.string.reintentar), onClick = onReintentarClick, modifier = Modifier.wrapContentSize())
     }
 }

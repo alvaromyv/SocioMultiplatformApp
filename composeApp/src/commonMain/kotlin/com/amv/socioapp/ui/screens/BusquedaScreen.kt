@@ -26,9 +26,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -42,7 +46,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.amv.socioapp.model.Usuario
+import com.amv.socioapp.network.model.SocioRequest
+import com.amv.socioapp.network.model.UsuarioRequest
+import com.amv.socioapp.ui.components.DetailPaneContent
 import com.amv.socioapp.util.PerfilAvatar
+import com.hyperether.resources.stringResource
+import kotlinx.coroutines.launch
+import sociomultiplatformapp.composeapp.generated.resources.Res
+import sociomultiplatformapp.composeapp.generated.resources.regresar
 
 @Composable
 fun BusquedaScreen(
@@ -51,7 +62,10 @@ fun BusquedaScreen(
     searchResults: List<Usuario> = emptyList(),
     onSearchQueryChanged: (String) -> Unit = {},
     onSearchTriggered: (String) -> Unit = {},
+    onItemClick: (Int) -> Unit = {},
     onBackClick: () -> Unit = {},
+    onEliminarClick: (Int) -> Unit = {},
+    onEditar: (UsuarioRequest?, SocioRequest?) -> Unit = { _, _ -> }
 ) {
     Column(modifier = modifier) {
         Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeDrawing))
@@ -63,7 +77,7 @@ fun BusquedaScreen(
         )
         SearchResults(
             searchResults = searchResults,
-            onItemClick = {}
+            onItemClick = onItemClick
         )
     }
 }
@@ -83,7 +97,7 @@ private fun SearchToolbar(
         IconButton(onClick = { onBackClick() }) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Regresar",
+                contentDescription = stringResource(Res.string.regresar),
             )
         }
         SearchTextField(
@@ -130,7 +144,7 @@ private fun SearchTextField(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Close,
-                        contentDescription = "Cerrar",
+                        contentDescription = stringResource(Res.string.regresar),
                         tint = MaterialTheme.colorScheme.onSurface,
                     )
                 }
@@ -174,7 +188,7 @@ private fun SearchTextField(
 @Composable
 fun SearchResults(
     searchResults: List<Usuario>,
-    onItemClick: (Usuario) -> Unit
+    onItemClick: (Int) -> Unit
 ) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
         searchResults.forEach { item ->
@@ -199,7 +213,7 @@ fun SearchResults(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 12.dp, vertical = 12.dp)
-                    .clickable { onItemClick(item) }
+                    .clickable { onItemClick(item.id) }
             )
         }
     }

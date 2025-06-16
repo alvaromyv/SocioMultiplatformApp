@@ -14,19 +14,19 @@ fun Modifier.responsiveFillMaxWidth(windowAdaptiveInfo: WindowAdaptiveInfo = cur
     return when (getLayoutType(windowAdaptiveInfo)) {
         WindowWidthSizeClass.COMPACT -> this.fillMaxWidth(0.8f)
         WindowWidthSizeClass.MEDIUM -> this.fillMaxWidth(0.6f)
-        WindowWidthSizeClass.EXPANDED -> this.fillMaxWidth(0.4f)
+        WindowWidthSizeClass.EXPANDED -> this.fillMaxWidth(0.25f)
         else -> this.fillMaxWidth()
     }
 }
 
 @Composable
-fun responsiveNavigationSuiteType(windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo()): NavigationSuiteType {
-    return when (getLayoutType(windowAdaptiveInfo)) {
+fun responsiveNavigationSuiteType(windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(), hayNavegacion: Boolean = true): NavigationSuiteType {
+    return if(hayNavegacion) when (getLayoutType(windowAdaptiveInfo)) {
         WindowWidthSizeClass.EXPANDED -> NavigationSuiteType.NavigationDrawer
         WindowWidthSizeClass.MEDIUM -> NavigationSuiteType.NavigationRail
         WindowWidthSizeClass.COMPACT -> NavigationSuiteType.NavigationBar
         else -> NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(windowAdaptiveInfo)
-    }
+    } else NavigationSuiteType.None
 }
 
 @Composable

@@ -59,15 +59,14 @@ class SociosViewModel(private val sociosRepository: SociosRepository) : ViewMode
 //        }
 //    }
 
-    fun creaUno(socio: SocioBodyRequest) {
+    fun creaUno(socio: SocioBodyRequest, onSuccess: () -> Unit = {}) {
         viewModelScope.launch {
             try {
-                when (val response = sociosRepository.creaUno(socio)) {
-                    is ResponseSuccess -> {
+                when (val response = sociosRepository.creaUno(socio)) {is ResponseSuccess -> {
                         when (val content = response.data) {
                             is UnSocioResponse -> {
                                 mostrarSnackbar(content.info.message, SnackbarType.SUCCESS)
-                                // leerTodos()
+                                onSuccess()
                             }
                             else -> throw SerializationException()
                         }
@@ -109,7 +108,7 @@ class SociosViewModel(private val sociosRepository: SociosRepository) : ViewMode
         }
     }
 
-    fun reasignarNumeracion() {
+    fun reasignarNumeracion(onSuccess: () -> Unit = {}) {
         viewModelScope.launch {
             try {
                 when (val response = sociosRepository.reasignarNumeracion()) {
@@ -117,6 +116,7 @@ class SociosViewModel(private val sociosRepository: SociosRepository) : ViewMode
                         when (val content = response.data) {
                             is SimpleResponse -> {
                                 mostrarSnackbar(content.info.message, SnackbarType.SUCCESS)
+                                onSuccess()
                                 // leerTodos()
                             }
                             else -> throw SerializationException()

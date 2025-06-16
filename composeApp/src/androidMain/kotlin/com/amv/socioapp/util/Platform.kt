@@ -9,3 +9,5 @@ actual typealias MyIgnoredOnParcel = kotlinx.parcelize.IgnoredOnParcel
 actual fun getBaseUrl(): String = "http://10.0.2.2:3000/"
 
 actual fun getLanguageTag(): String =  Locale.getDefault().toLanguageTag()
+
+actual fun cambiarIdioma(languageTag: String) = Locale.setDefault(Locale.forLanguageTag(languageTag))

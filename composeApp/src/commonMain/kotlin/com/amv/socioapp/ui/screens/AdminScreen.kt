@@ -18,8 +18,10 @@ import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -35,8 +37,14 @@ import com.amv.socioapp.ui.components.DetailPaneContent
 import com.amv.socioapp.ui.components.ExceptionScreen
 import com.amv.socioapp.ui.components.LoadingScreen
 import com.amv.socioapp.ui.viewmodel.UsuariosUiState
+import com.amv.socioapp.ui.viewmodel.UsuariosViewModel
 import com.amv.socioapp.util.PerfilAvatar
 import kotlinx.coroutines.launch
+import com.hyperether.resources.stringResource
+import sociomultiplatformapp.composeapp.generated.resources.Res
+import sociomultiplatformapp.composeapp.generated.resources.socios
+import sociomultiplatformapp.composeapp.generated.resources.todos
+import sociomultiplatformapp.composeapp.generated.resources.usuarios
 
 @Composable
 fun AdminScreen(
@@ -45,6 +53,10 @@ fun AdminScreen(
     onEliminarClick: (Int) -> Unit = {},
     onEditar: (UsuarioRequest?, SocioRequest?) -> Unit = { _, _ -> }
 ) {
+    LaunchedEffect(Unit) {
+        onReintentarClick()
+    }
+
     when(val estado = usuariosUiState) {
         is UsuariosUiState.Success -> {
             AdminListDetailPaneScaffold(
@@ -88,6 +100,7 @@ private fun AdminListDetailPaneScaffold(
         detailPane = {
             AnimatedPane {
                 selectedItem?.let { item ->
+                    var edicion by remember { mutableStateOf(false) }
                     DetailPaneContent(
                         usuario = item,
                         onEliminarClick = { id ->
@@ -104,6 +117,8 @@ private fun AdminListDetailPaneScaffold(
                                 scaffoldNavigator.navigateTo(ListDetailPaneScaffoldRole.List)
                             }
                         },
+                        edicion = edicion,
+                        onEdicionChange = { edicion = it },
                         modifier = Modifier.fillMaxSize()
                     )
                 }
@@ -126,7 +141,7 @@ private fun ListPaneContent(
 ){
     var indiceSeleccionado by remember { mutableIntStateOf(0) }
     val filtrados: List<Usuario> = when(indiceSeleccionado) {
-        1 -> items.filter { it.socio != null }
+        1 -> items.filter { it.socio != null } .sortedByDescending { it.socio?.nSocio }
         2 -> items.filter { it.socio == null }
         else -> items
     }
@@ -173,7 +188,7 @@ private fun TabOpciones(
     onTabSeleccionado: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val opciones = listOf("Todos", "Socios", "Usuarios")
+    val opciones = listOf(stringResource(Res.string.todos), stringResource(Res.string.socios), stringResource(Res.string.usuarios))
 
     TabRow(selectedTabIndex = indiceSeleccionado, modifier = modifier.fillMaxWidth()) {
         opciones.forEachIndexed { indice, opcion ->

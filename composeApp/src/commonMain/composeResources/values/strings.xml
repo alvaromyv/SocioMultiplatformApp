@@ -39,9 +39,9 @@
     <string name="error_fecha">The entered date must not be later than the current one.</string>
     <string name="error_telefono">The entered phone number is not valid.</string>
     <string name="error_email">The entered email is not valid.</string>
-    <string name="error_nombre">The name must not exceed %1$d characters.</string>
-    <string name="error_contraseña">The password must be at least %1$d characters long.</string>
-    <string name="error_apellidos">The surname must not exceed %1$d characters.</string>
+    <string name="error_nombre">The name must not exceed 8 characters.</string>
+    <string name="error_contraseña">The password must be at least 50 characters long.</string>
+    <string name="error_apellidos">The surname must not exceed 50 characters.</string>
     <string name="error_red">Network Error. Please try again</string>
     <string name="reintentar">Try again</string>
     <string name="editar">Modify</string>
@@ -51,6 +51,7 @@
     <string name="seleccionar">Select</string>
     <string name="iniciar_sesion">Log In</string>
     <string name="acceder">Access</string>
-    <string name="regresar">Back</string>"
+    <string name="regresar">Back</string>
+    <string name="app_nombre">Jonny Memonic</string>
     <!--<string name=""></string>-->
 </resources>

@@ -1,10 +1,13 @@
 package com.amv.socioapp.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -17,8 +20,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.amv.socioapp.network.model.AuthRequest
 import com.amv.socioapp.ui.components.MiButton
 import com.amv.socioapp.ui.components.MiLabel
@@ -27,6 +33,10 @@ import com.amv.socioapp.ui.events.MiCustomSnackbar
 import com.amv.socioapp.ui.viewmodel.AuthViewModel
 import com.amv.socioapp.ui.viewmodel.InputViewModel
 import com.amv.socioapp.util.responsiveFillMaxWidth
+import com.hyperether.resources.stringResource
+import io.github.vinceglb.filekit.coil.AsyncImage
+import org.jetbrains.compose.resources.painterResource
+import sociomultiplatformapp.composeapp.generated.resources.*
 
 @Composable
 fun LoginScreen(
@@ -41,16 +51,11 @@ fun LoginScreen(
         }
     ) { padding ->
         LoginContent(
-            inputViewModel = inputViewModel,
+            viewModel = inputViewModel,
             onLoginTry = onLoginTry,
             modifier = Modifier.padding(padding)
         )
     }
-
-    LoginContent(
-        inputViewModel = inputViewModel,
-        onLoginTry = onLoginTry,
-    )
 
     /*when (currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass) {
         WindowWidthSizeClass.EXPANDED -> LoginContentExpanded(inputViewModel, onLoginTry)
@@ -62,7 +67,7 @@ fun LoginScreen(
 
 @Composable
 private fun LoginContent(
-    inputViewModel: InputViewModel,
+    viewModel: InputViewModel,
     onLoginTry: (AuthRequest) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -70,61 +75,69 @@ private fun LoginContent(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        ElevatedCard(
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-            ),
-            modifier = Modifier.responsiveFillMaxWidth()
-        ) {
-            Column(
+        Column(modifier = Modifier.responsiveFillMaxWidth()) {
+            Image(
+                painter = painterResource(Res.drawable.logo_app),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .aspectRatio(1f)
+                    .clip(RoundedCornerShape(10.dp)),
+                contentScale = ContentScale.Fit,
+                contentDescription = stringResource(Res.string.app_nombre),
+            )
+            ElevatedCard(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ),
             ) {
-                MiLabel(
-                    text = "INICIAR SESIÓN",
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    MiLabel(
+                        text = stringResource(Res.string.iniciar_sesion),
+                        style = MaterialTheme.typography.headlineSmall,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                    MiTextField(
+                        label = stringResource(Res.string.email),
+                        valor = viewModel.usuarioFormState.email,
+                        hayError = viewModel.esEmailErroneo,
+                        mensajeError = stringResource(Res.string.error_email),
+                        onValorChange = viewModel::actualizarEmail,
+                        modifier = Modifier.fillMaxWidth(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    )
 
-                MiTextField(
-                    label = "Email",
-                    valor = inputViewModel.usuarioFormState.email,
-                    hayError = inputViewModel.esEmailErroneo,
-                    mensajeError = "El email introducido no es válido.",
-                    onValorChange = inputViewModel::actualizarEmail,
-                    modifier = Modifier.fillMaxWidth(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                )
+                    MiTextField(
+                        label = stringResource(Res.string.contraseña),
+                        valor = viewModel.usuarioFormState.password,
+                        hayError = false,
+                        mensajeError = "",
+                        onValorChange = viewModel::actualizarPassword,
+                        modifier = Modifier.fillMaxWidth(),
+                        esVisible = viewModel.esPasswordVisible,
+                        trailingIcon = Icons.Filled.Visibility,
+                        onTrailingIconClick = viewModel::actualizarPasswordVisible,
+                        enabled = !viewModel.esEmailErroneo,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    )
 
-                MiTextField(
-                    label = "Contraseña",
-                    valor = inputViewModel.usuarioFormState.password,
-                    hayError = false,
-                    mensajeError = "",
-                    onValorChange = inputViewModel::actualizarPassword,
-                    modifier = Modifier.fillMaxWidth(),
-                    esVisible = inputViewModel.esPasswordVisible,
-                    trailingIcon = Icons.Filled.Visibility,
-                    onTrailingIconClick = inputViewModel::actualizarPasswordVisible,
-                    enabled = !inputViewModel.esEmailErroneo,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                )
-
-                MiButton(
-                    accion = "Acceder",
-                    onClick = {
-                        onLoginTry(
-                            AuthRequest(
-                                inputViewModel.usuarioFormState.email,
-                                inputViewModel.usuarioFormState.password
+                    MiButton(
+                        accion = stringResource(Res.string.acceder),
+                        onClick = {
+                            onLoginTry(
+                                AuthRequest(
+                                    viewModel.usuarioFormState.email,
+                                    viewModel.usuarioFormState.password
+                                )
                             )
-                        )
-                    },
-                    activado = inputViewModel.esFormularioLoginValido,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                        },
+                        activado = viewModel.esFormularioLoginValido,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         }
     }

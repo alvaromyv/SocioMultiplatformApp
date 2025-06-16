@@ -24,8 +24,11 @@ fun PerfilScreen(
                 modifier = modifier.fillMaxWidth(),
                 usuario = estado.sesion.usuario,
                 onEliminarClick = onEliminarClick,
-                onEditarClick = onEditarClick
-            )
+                onEditarClick = onEditarClick,
+                edicion = false
+            ) { formValidado, onConfirmarClick, _, onEditarClick, onEliminarClick, onReiniciarClick, edicion ->
+
+            }
         }
         is AuthUiState.Error -> {}
         is AuthUiState.Exception -> ExceptionScreen(onReintentarClick = onReintentarClick)

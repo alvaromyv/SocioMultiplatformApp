@@ -22,25 +22,30 @@ fun SocioTopAppBar(
     onNavigationClick: () -> Unit = {},
     onActualizarClick: () -> Unit = {},
     onActionClick: () -> Unit = {},
+    esAdmin: Boolean = false
 ) {
     CenterAlignedTopAppBar(
         title = { Text(text = title, style = MaterialTheme.typography.titleLarge) },
         navigationIcon = {
-            IconButton(onClick = onNavigationClick) {
-                Icon(
-                    imageVector = navigationIcon,
-                    contentDescription = navigationIconContentDescription,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                )
+            if (esAdmin) {
+                IconButton(onClick = onNavigationClick) {
+                    Icon(
+                        imageVector = navigationIcon,
+                        contentDescription = navigationIconContentDescription,
+                        tint = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
             }
         },
         actions = {
-            IconButton(onClick = onActualizarClick) {
-                Icon(
-                    imageVector = actualizarIcon,
-                    contentDescription = actualizarIconContentDescription,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                )
+            if(esAdmin) {
+                IconButton(onClick = onActualizarClick) {
+                    Icon(
+                        imageVector = actualizarIcon,
+                        contentDescription = actualizarIconContentDescription,
+                        tint = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
             }
             IconButton(onClick = onActionClick) {
                 Icon(

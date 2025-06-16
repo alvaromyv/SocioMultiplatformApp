@@ -10,4 +10,5 @@ plugins {
     alias(libs.plugins.kotlinxSerialization) apply false
     alias(libs.plugins.ktorfit) apply false
     alias(libs.plugins.kotlin.parcelize) apply false
+    alias(libs.plugins.hyperether.localization) apply false
 }

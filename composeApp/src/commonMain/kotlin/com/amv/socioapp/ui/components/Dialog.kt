@@ -35,6 +35,9 @@ import com.amv.socioapp.data.AjustesManager
 import com.amv.socioapp.data.AppLanguage
 import com.amv.socioapp.data.AppThemeMode
 import com.amv.socioapp.util.responsiveFillMaxWidth
+import com.hyperether.resources.stringResource
+import sociomultiplatformapp.composeapp.generated.resources.Res
+import sociomultiplatformapp.composeapp.generated.resources.*
 
 @Composable
 fun MiDialogoConfirmacion(
@@ -68,7 +71,7 @@ fun MiDialogoConfirmacion(
                     onConfirmar()
                 }
             ) {
-                Text("Aceptar")
+                Text(stringResource(Res.string.confirmar))
             }
         },
         dismissButton = {
@@ -77,7 +80,7 @@ fun MiDialogoConfirmacion(
                     onRechazarRequest()
                 }
             ) {
-                Text("Cancelar")
+                Text(stringResource(Res.string.cancelar))
             }
         }
     )
@@ -87,7 +90,8 @@ fun MiDialogoConfirmacion(
 fun AjustesDialog(
     onDismiss: () -> Unit,
     onCerrarSesion: () -> Unit,
-    onReasignarNumeracion: () -> Unit
+    onReasignarNumeracion: () -> Unit,
+    esAdmin: Boolean = false
 ) {
     var mostrarDialogoReasignacion by remember { mutableStateOf(false) }
 
@@ -97,52 +101,54 @@ fun AjustesDialog(
         onDismissRequest = { onDismiss() },
         title = {
             Text(
-                text = "Ajustes",
+                text = stringResource(Res.string.ajustes),
                 style = MaterialTheme.typography.titleLarge,
             )
         },
         text = {
             HorizontalDivider()
             Column(Modifier.verticalScroll(rememberScrollState())) {
-                AjustesDialogSectionTitle(text = "Tema")
+                AjustesDialogSectionTitle(text = stringResource(Res.string.tema))
                 Column(Modifier.selectableGroup()) {
                     AjustesDialogEscogerRow(
-                        text = "Mismo que en el dispositivo",
-                        selected = AjustesManager.theme == AppThemeMode.SYSTEM,
-                        onClick = { AjustesManager.onChangeTheme(AppThemeMode.SYSTEM) },
+                        text = stringResource(Res.string.mismo_dispositivo),
+                        selected = AjustesManager.tema == AppThemeMode.SYSTEM,
+                        onClick = { AjustesManager.onTemaChange(AppThemeMode.SYSTEM) },
                     )
                     AjustesDialogEscogerRow(
-                        text = "Claro",
-                        selected = AjustesManager.theme == AppThemeMode.LIGHT,
-                        onClick = { AjustesManager.onChangeTheme(AppThemeMode.LIGHT)  },
+                        text = stringResource(Res.string.tema_claro),
+                        selected = AjustesManager.tema == AppThemeMode.LIGHT,
+                        onClick = { AjustesManager.onTemaChange(AppThemeMode.LIGHT)  },
                     )
                     AjustesDialogEscogerRow(
-                        text = "Oscuro",
-                        selected = AjustesManager.theme == AppThemeMode.DARK,
-                        onClick = { AjustesManager.onChangeTheme(AppThemeMode.DARK) },
+                        text = stringResource(Res.string.tema_oscuro),
+                        selected = AjustesManager.tema == AppThemeMode.DARK,
+                        onClick = { AjustesManager.onTemaChange(AppThemeMode.DARK) },
                     )
                 }
-                AjustesDialogSectionTitle(text = "Idioma")
+                AjustesDialogSectionTitle(text =  stringResource(Res.string.idioma))
                 Column(Modifier.selectableGroup()) {
                     AjustesDialogEscogerRow(
-                        text = "Inglés",
-                        selected = AjustesManager.language == AppLanguage.ENGLISH,
-                        onClick = { AjustesManager.onLanguageChange(AppLanguage.ENGLISH)  },
+                        text = stringResource(Res.string.ingles),
+                        selected = AjustesManager.idioma == AppLanguage.ENGLISH,
+                        onClick = { AjustesManager.onIdiomaChange(AppLanguage.ENGLISH)  },
                     )
                     AjustesDialogEscogerRow(
-                        text = "Español",
-                        selected = AjustesManager.language == AppLanguage.SPANISH,
-                        onClick = { AjustesManager.onLanguageChange(AppLanguage.SPANISH)  },
+                        text = stringResource(Res.string.español),
+                        selected = AjustesManager.idioma == AppLanguage.SPANISH,
+                        onClick = { AjustesManager.onIdiomaChange(AppLanguage.SPANISH)  },
                     )
                 }
                 HorizontalDivider(Modifier.padding(top = 8.dp, bottom = 24.dp))
+                if (esAdmin) {
+                    MiButton(
+                        accion = stringResource(Res.string.re_asignar_numeracion_titulo),
+                        onClick = { mostrarDialogoReasignacion = true },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
                 MiButton(
-                    accion = "Reasignar numeración socios",
-                    onClick = { mostrarDialogoReasignacion = true },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                MiButton(
-                    accion = "Cerrar sesión",
+                    accion = stringResource(Res.string.cerrar_sesion),
                     onClick = onCerrarSesion,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -154,7 +160,7 @@ fun AjustesDialog(
                 modifier = Modifier.padding(horizontal = 8.dp),
             ) {
                 Text(
-                    text = "OK",
+                    text = stringResource(Res.string.ok),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary,
                 )
@@ -170,8 +176,8 @@ fun AjustesDialog(
                 mostrarDialogoReasignacion = false
             },
             icon = Icons.Filled.FormatListNumbered,
-            titulo = "Reasignar numeración",
-            texto = "¿Estás seguro de que quieres reasignar la numeración de los socios?"
+            titulo = stringResource(Res.string.re_asignar_numeracion_titulo),
+            texto = stringResource(Res.string.re_asignar_numeracion_texto)
         )
     }
 }

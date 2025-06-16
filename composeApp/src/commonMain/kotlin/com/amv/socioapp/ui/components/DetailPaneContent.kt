@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,8 +18,10 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,6 +45,8 @@ import com.amv.socioapp.util.getLayoutType
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
+import com.hyperether.resources.stringResource
+import sociomultiplatformapp.composeapp.generated.resources.*
 
 @Composable
 fun DetailPaneContent(
@@ -50,6 +55,9 @@ fun DetailPaneContent(
     viewModel: InputViewModel = remember { InputViewModel() },
     onEliminarClick: (Int) -> Unit = {},
     onEditarClick: (UsuarioRequest?, SocioRequest?) -> Unit = { _, _ -> },
+    edicion: Boolean,
+    creacion: Boolean = false,
+    onEdicionChange: (Boolean) -> Unit = {},
     opcionesContent: @Composable ColumnScope.(
         formValidado: Boolean,
         onConfirmarClick: () -> Unit,
@@ -69,48 +77,79 @@ fun DetailPaneContent(
         )
     }
 ) {
-    LaunchedEffect(Unit) {
-        viewModel.actualizarHaySocio(usuario.socio != null)
+    LaunchedEffect(usuario.id, edicion) {
         viewModel.cargarUsuario(usuario)
     }
 
-    var edicion by remember { mutableStateOf(false) }
-
     Column(
         modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .padding(12.dp),
-        verticalArrangement = Arrangement.SpaceBetween
+            .fillMaxSize()
+            .padding(12.dp)
     ) {
         ElevatedCard(
-            modifier = modifier,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
             shape = RoundedCornerShape(16.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)
         ) {
-            when (getLayoutType()) {
-                WindowWidthSizeClass.COMPACT -> DetailPaneContentCompactMedium(Modifier.fillMaxWidth(), viewModel, usuario, edicion)
-                WindowWidthSizeClass.MEDIUM -> DetailPaneContentCompactMedium(Modifier.fillMaxWidth(), viewModel, usuario, edicion)
-                WindowWidthSizeClass.EXPANDED -> DetailPaneContentExpanded(Modifier.fillMaxWidth(), viewModel, usuario, edicion)
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+            ) {
+                when (getLayoutType()) {
+                    WindowWidthSizeClass.COMPACT -> DetailPaneContentForm(
+                        Modifier.fillMaxWidth(),
+                        viewModel,
+                        usuario,
+                        edicion,
+                        false,
+                        creacion
+                    )
+
+                    WindowWidthSizeClass.MEDIUM -> DetailPaneContentForm(
+                        Modifier.fillMaxWidth(),
+                        viewModel,
+                        usuario,
+                        edicion,
+                        false,
+                        creacion
+                    )
+
+                    WindowWidthSizeClass.EXPANDED -> DetailPaneContentForm(
+                        Modifier.fillMaxWidth(),
+                        viewModel,
+                        usuario,
+                        edicion,
+                        true,
+                        creacion
+                    )
+                }
             }
         }
+
         opcionesContent(
-            viewModel.esFormularioValidado, // FormValidado
-            { onEditarClick(viewModel.construirUsuario(), viewModel.construirSocio()) }, // onConfirmarClick
-            { edicion = false; viewModel.cargarUsuario(usuario) }, // onCancelarClick
-            { edicion = true }, // onEditarClick
-            { onEliminarClick(usuario.id) }, // onEliminarClick
-            { viewModel.reiniciarValores() }, // onReiniciarClick
+            viewModel.esFormularioValidado,
+            { onEditarClick(viewModel.construirUsuario(), viewModel.construirSocio()) },
+            { onEdicionChange(false); viewModel.cargarUsuario(usuario) },
+            { onEdicionChange(true) },
+            { onEliminarClick(usuario.id) },
+            { viewModel.reiniciarValores() },
             edicion
         )
     }
+
 }
 
 @Composable
-private fun DetailPaneContentCompactMedium(
+private fun DetailPaneContentForm(
     modifier: Modifier = Modifier,
-    vm: InputViewModel,
+    viewModel: InputViewModel,
     usuario: Usuario,
-    edicion: Boolean = false
+    edicion: Boolean = false,
+    expanded: Boolean = false,
+    creacion: Boolean = false
 ) {
     Column(
         modifier = modifier
@@ -118,140 +157,20 @@ private fun DetailPaneContentCompactMedium(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         AvatarHeader(
-            avatarUrl = vm.usuarioFormState.avatarUrl,
-            avatarUri = vm.usuarioFormState.avatarUri,
+            avatarUrl = viewModel.usuarioFormState.avatarUrl,
+            avatarUri = viewModel.usuarioFormState.avatarUri,
             nombre = usuario.obtenerNombreCompleto(),
-            onActualizarAvatarUri = vm::actualizarAvatarUri,
+            onActualizarAvatarUri = viewModel::actualizarAvatarUri,
             edicion = edicion,
-            expanded = false
+            expanded = expanded
         )
 
-        if(edicion) {
-            MiTextField(
-                label = "Nombre",
-                valor = vm.usuarioFormState.nombre,
-                hayError = vm.esNombreErroneo,
-                mensajeError = "El nombre no debe superar los ${InputViewModel.MAX_STRING_LENGTH} caracteres.",
-                onValorChange = vm::actualizarNombre,
-                modifier = Modifier.fillMaxWidth(),
-                leadingIcon = Icons.Filled.Person,
-                readOnly = !edicion
-            )
+        HorizontalDivider()
 
-            MiTextField(
-                label = "Apellidos",
-                valor = vm.usuarioFormState.apellidos ?: "",
-                hayError = vm.esApellidosErroneo,
-                mensajeError = "El apellido no debe superar los ${InputViewModel.MAX_STRING_LENGTH} caracteres.}",
-                onValorChange = vm::actualizarApellidos,
-                modifier = Modifier.fillMaxWidth(),
-                readOnly = !edicion
-            )
-        }
+        UsuarioFormContent(viewModel, edicion, creacion)
 
-        if(!edicion && vm.usuarioFormState.telefono != null) {
-            MiTextField(
-                label = "Telefono",
-                valor = vm.usuarioFormState.telefono ?: "",
-                hayError = vm.esTelefonoErroneo,
-                mensajeError = "El telefono introducido no es válido.",
-                onValorChange = vm::actualizarTelefono,
-                modifier = Modifier.fillMaxWidth(),
-                leadingIcon = Icons.Filled.Phone,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                readOnly = !edicion
-            )
-        }
-
-        MiTextField(
-            label = "Email",
-            valor = vm.usuarioFormState.email,
-            hayError = vm.esEmailErroneo,
-            mensajeError = "El correo introducido no es válido.",
-            onValorChange = vm::actualizarEmail,
-            modifier = Modifier.fillMaxWidth(),
-            leadingIcon = Icons.Filled.Email,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            readOnly = !edicion
-        )
-
-        SeleccionButtonRow(
-            valor = vm.usuarioFormState.rol,
-            onValorChange = vm::actualizarRol,
-            enabled = edicion,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        if(edicion) {
-            MiCheckBox(
-                valor = vm.haySocio,
-                label = "¿Es socio?",
-                enabled = edicion,
-                onValorChange = vm::actualizarHaySocio,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-
-        if (vm.haySocio){
-            MiLabel("SOCIO", textAlign = TextAlign.Center, style = MaterialTheme.typography.headlineSmall, modifier = Modifier.fillMaxWidth())
-
-            SeleccionButtonRow(
-                valor = vm.socioFormState.categoria,
-                onValorChange = vm::actualizarCategoria,
-                enabled = edicion,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            MiTextFieldFecha(
-                label = "Fecha de antiguedad",
-                fecha = vm.socioFormState.fechaAntiguedad,
-                hayError = vm.esFechaAntiguedadErroneo,
-
-                onFechaChange = vm::actualizarFechaAntiguedad,
-                modifier = Modifier.fillMaxWidth(),
-                mensajeError = "La fecha introducida no debe ser posterior a la actual.",
-                enabled = edicion
-            )
-
-            MiCheckBox(
-                valor = vm.socioFormState.abonado,
-                label = "Abonado",
-                enabled = edicion,
-                onValorChange = vm::actualizarAbonado,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-    }
-}
-
-@Composable
-private fun DetailPaneContentExpanded(
-    modifier: Modifier = Modifier,
-    vm: InputViewModel,
-    usuario: Usuario,
-    edicion: Boolean = false
-) {
-    Column (
-        modifier = modifier
-            .padding(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        AvatarHeader(
-            avatarUrl = vm.usuarioFormState.avatarUrl,
-            avatarUri = vm.usuarioFormState.avatarUri,
-            nombre = usuario.obtenerNombreCompleto(),
-            onActualizarAvatarUri = vm::actualizarAvatarUri,
-            edicion = edicion,
-            expanded = true
-        )
-        Row {
-            Column(modifier = Modifier.weight(1f)) {
-
-            }
-
-            Column(modifier = Modifier.weight(1f)) {
-
-            }
+        if(viewModel.haySocio){
+            SocioFormContent(viewModel, edicion)
         }
     }
 }
@@ -319,6 +238,142 @@ private fun AvatarHeader(
 }
 
 @Composable
+private fun UsuarioFormContent(
+    viewModel: InputViewModel,
+    edicion: Boolean,
+    creacion: Boolean
+) {
+    MiLabel(
+        stringResource(Res.string.informacion),
+        textAlign = TextAlign.Center,
+        style = MaterialTheme.typography.headlineSmall,
+        modifier = Modifier.fillMaxWidth()
+    )
+
+    if (edicion) {
+        MiTextField(
+            label = stringResource(Res.string.nombre),
+            valor = viewModel.usuarioFormState.nombre,
+            hayError = viewModel.esNombreErroneo,
+            mensajeError = stringResource(Res.string.error_nombre),
+            onValorChange = viewModel::actualizarNombre,
+            modifier = Modifier.fillMaxWidth(),
+            leadingIcon = Icons.Filled.Person,
+            readOnly = !edicion
+        )
+
+        MiTextField(
+            label = stringResource(Res.string.apellidos),
+            valor = viewModel.usuarioFormState.apellidos ?: "",
+            hayError = viewModel.esApellidosErroneo,
+            mensajeError = stringResource(Res.string.error_apellidos),
+            onValorChange = viewModel::actualizarApellidos,
+            modifier = Modifier.fillMaxWidth(),
+            readOnly = !edicion
+        )
+
+        MiTextField(
+            label = stringResource(Res.string.telefono),
+            valor = viewModel.usuarioFormState.telefono ?: "",
+            hayError = viewModel.esTelefonoErroneo,
+            mensajeError = stringResource(Res.string.error_telefono),
+            onValorChange = viewModel::actualizarTelefono,
+            modifier = Modifier.fillMaxWidth(),
+            leadingIcon = Icons.Filled.Phone,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            readOnly = !edicion
+        )
+    }
+
+    MiTextField(
+        label = stringResource(Res.string.email),
+        valor = viewModel.usuarioFormState.email,
+        hayError = viewModel.esEmailErroneo,
+        mensajeError = stringResource(Res.string.error_email),
+        onValorChange = viewModel::actualizarEmail,
+        modifier = Modifier.fillMaxWidth(),
+        leadingIcon = Icons.Filled.Email,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+        readOnly = !edicion
+    )
+
+    if(creacion) {
+        MiTextField(
+            label = stringResource(Res.string.contraseña),
+            valor = viewModel.usuarioFormState.password,
+            hayError = viewModel.esPasswordErroneo,
+            mensajeError = stringResource(Res.string.error_contraseña),
+            onValorChange = viewModel::actualizarPassword,
+            modifier = Modifier.fillMaxWidth(),
+            esVisible = viewModel.esPasswordVisible,
+            trailingIcon = Icons.Filled.Visibility,
+            onTrailingIconClick = viewModel::actualizarPasswordVisible,
+            enabled = !viewModel.esEmailErroneo,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        )
+    }
+
+    SeleccionButtonRow(
+        valor = viewModel.usuarioFormState.rol,
+        label = stringResource(Res.string.rol),
+        onValorChange = viewModel::actualizarRol,
+        enabled = edicion,
+        modifier = Modifier.fillMaxWidth()
+    )
+
+    if (edicion) {
+        MiCheckBox(
+            valor = viewModel.haySocio,
+            label = stringResource(Res.string.es_socio),
+            enabled = edicion,
+            onValorChange = viewModel::actualizarHaySocio,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Composable
+private fun SocioFormContent(
+    viewModel: InputViewModel,
+    edicion: Boolean
+) {
+
+    MiLabel(
+        stringResource(Res.string.socio),
+        textAlign = TextAlign.Center,
+        style = MaterialTheme.typography.headlineSmall,
+        modifier = Modifier.fillMaxWidth()
+    )
+
+    SeleccionButtonRow(
+        valor = viewModel.socioFormState.categoria,
+        label = stringResource(Res.string.categoria),
+        onValorChange = viewModel::actualizarCategoria,
+        enabled = edicion,
+        modifier = Modifier.fillMaxWidth()
+    )
+
+    MiTextFieldFecha(
+        label = stringResource(Res.string.fecha_antiguedad),
+        fecha = viewModel.socioFormState.fechaAntiguedad,
+        hayError = viewModel.esFechaAntiguedadErroneo,
+
+        onFechaChange = viewModel::actualizarFechaAntiguedad,
+        modifier = Modifier.fillMaxWidth(),
+        mensajeError = stringResource(Res.string.error_fecha),
+        enabled = edicion
+    )
+
+    MiCheckBox(
+        valor = viewModel.socioFormState.abonado,
+        label = stringResource(Res.string.abonado),
+        enabled = edicion,
+        onValorChange = viewModel::actualizarAbonado,
+        modifier = Modifier.fillMaxWidth()
+    )
+}
+
+@Composable
 private fun OpcionesModificacion(
     formValidado: Boolean,
     onConfirmarClick: () -> Unit = {},
@@ -334,46 +389,46 @@ private fun OpcionesModificacion(
         var abiertoDialogoEliminar by remember { mutableStateOf(false) }
         var abiertoDialogoConfirmar by remember { mutableStateOf(false) }
 
-        if(edicion) {
+        if (edicion) {
             MiButton(
-                accion = "Confirmar",
+                accion = stringResource(Res.string.confirmar),
                 onClick = { abiertoDialogoConfirmar = true },
                 activado = formValidado,
                 modifier = Modifier.weight(1f)
             )
             MiButton(
-                accion = "Cancelar",
+                accion = stringResource(Res.string.cancelar),
                 onClick = onCancelarClick,
                 modifier = Modifier.weight(1f)
             )
         } else {
             MiButton(
-                accion = "Editar",
+                accion = stringResource(Res.string.editar),
                 onClick = onEditarClick,
                 modifier = Modifier.weight(1f)
             )
             MiButton(
-                accion = "Eliminar",
+                accion = stringResource(Res.string.eliminar),
                 onClick = { abiertoDialogoEliminar = true },
                 modifier = Modifier.weight(1f)
             )
         }
 
-        if(abiertoDialogoEliminar) {
+        if (abiertoDialogoEliminar) {
             MiDialogoConfirmacion(
                 icon = Icons.Filled.Delete,
-                titulo = "Eliminar",
-                texto = "¿Deseas eliminar a este usuario?",
+                titulo = stringResource(Res.string.eliminar),
+                texto = stringResource(Res.string.confirmar_eliminar),
                 onConfirmar = { onEliminarClick() },
                 onRechazarRequest = { abiertoDialogoEliminar = false },
             )
         }
 
-        if(abiertoDialogoConfirmar) {
+        if (abiertoDialogoConfirmar) {
             MiDialogoConfirmacion(
                 icon = Icons.Filled.Check,
-                titulo = "Confirmar",
-                texto = "¿Estás seguro que deseas modificar al usuario?",
+                titulo = stringResource(Res.string.editar),
+                texto = stringResource(Res.string.confirmar_modificar),
                 onConfirmar = { onConfirmarClick() },
                 onRechazarRequest = { abiertoDialogoConfirmar = false },
             )
