@@ -1,18 +1,85 @@
-This is a Kotlin Multiplatform project targeting Android, Web.
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
+# 📱 SocioApp - Gestión de Peña Sevillista
 
+**SocioApp** es una aplicación multiplataforma (Android y Web) desarrollada como proyecto final del ciclo superior de Desarrollo de Aplicaciones Multiplataforma (FP DAM). Su objetivo principal es facilitar la gestión de los socios de una peña sevillista mediante una API RESTful con base de datos integrada.
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html),
-[Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform/#compose-multiplatform),
-[Kotlin/Wasm](https://kotl.in/wasm/)…
+## 🧩 Características Principales
 
-We would appreciate your feedback on Compose/Web and Kotlin/Wasm in the public Slack channel [#compose-web](https://slack-chats.kotlinlang.org/c/compose-web).
-If you face any issues, please report them on [YouTrack](https://youtrack.jetbrains.com/newIssue?project=CMP).
+- 🔐 Autenticación JWT con roles (Administrador / Usuario)
+- 👤 Gestión completa de usuarios y socios
+- 📆 Reasignación de número de socio según antigüedad
+- 🌍 Soporte multilenguaje (español e inglés)
+- 🌗 Soporte para modo claro/oscuro
+- 🖼️ Carga de imágenes de perfil
+- 🧭 Interfaz intuitiva construida con Jetpack Compose y Kotlin Multiplatform
+- 🔗 Comunicación HTTP con seguridad (APIKEY + JWT)
 
-You can open the web application by running the `:composeApp:wasmJsBrowserDevelopmentRun` Gradle task.
+## 🛠️ Tecnologías Utilizadas
+
+### Backend (API RESTful)
+
+- **Node.js + Express**
+- **MySQL2 + Sequelize (ORM)**
+- **JWT (JsonWebToken)**
+- **Multer** (gestión de imágenes)
+- **AJV** (validación JSON)
+- **I18N** (internacionalización)
+- **Dotenv** (variables de entorno)
+- **Cors**
+
+### Cliente (Web y Android)
+
+- **Kotlin Multiplatform (KMP)**
+- **Jetpack Compose**
+- **Ktor Client / Ktorfit**
+- **Kotlinx Serialization / Kotlinx Datetime**
+- **Multiplatform Settings** (persistencia local)
+- **Coil** (carga de imágenes)
+- **FileKit** (gestión de archivos)
+
+## 🔐 Roles y Permisos
+
+| Funcionalidad                            | Usuario | Administrador |
+|-----------------------------------------|:-------:|:-------------:|
+| Iniciar sesión                          | ✅      | ✅            |
+| Ver información personal                | ✅      | ✅            |
+| Alta / Modificación / Eliminación       | ❌      | ✅            |
+| Ver y filtrar socios                    | ❌      | ✅            |
+| Reasignar numeración por antigüedad     | ❌      | ✅            |
+| Cambiar idioma o tema visual            | ✅      | ✅            |
+
+## 🧪 Requisitos del Sistema
+
+- **Servidor:**
+  - Node.js v18+
+  - MySQL
+  - Entorno de desarrollo: Visual Studio Code
+- **Cliente Android/Web:**
+  - Android Studio (para Android)
+  - Navegador moderno (para Web)
+  - Kotlin Multiplatform
+
+## 🧮 Modelo de Datos
+
+### Tabla `usuario`
+- `id`: INT, PK, autoincrement
+- `avatar`: STRING (opcional)
+- `nombre`: STRING
+- `apellidos`: STRING (opcional)
+- `telefono`: STRING (opcional)
+- `email`: STRING, único
+- `contraseña`: STRING
+- `rol`: ENUM (`usuario`, `administrador`)
+
+### Tabla `socio`
+- `id`: INT, PK, autoincrement
+- `numero_socio`: INT
+- `fecha_antigüedad`: STRING
+- `categoría`: ENUM (`Infantil`, `Juvenil`, `Adulto`, `Senior`)
+- `abonado`: BOOLEAN
+- `usuario_id`: FK → `usuario.id`
+
+## 🧑‍💻 Autor
+
+**Desarrollado por: Álvaro Moyano Vila**  
+Proyecto final individual realizado como cierre del ciclo formativo de Grado Superio DAM.
