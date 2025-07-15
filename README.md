@@ -1,85 +1,60 @@
 
-# 📱 SocioApp - Gestión de Peña Sevillista
+# 📱 SociosApp - Aplicación Multiplataforma (Android/Web)
 
-**SocioApp** es una aplicación multiplataforma (Android y Web) desarrollada como proyecto final del ciclo superior de Desarrollo de Aplicaciones Multiplataforma (FP DAM). Su objetivo principal es facilitar la gestión de los socios de una peña sevillista mediante una API RESTful con base de datos integrada.
+Aplicación cliente multiplataforma para la gestión de socios de una peña sevillista. Desarrollada con **Kotlin Multiplatform (KMP)** y **Jetpack Compose**, permite su ejecución tanto en Android como en Web. Consume la API REST del backend para ofrecer funcionalidades como login, gestión de usuarios y socios, internacionalización y personalización de interfaz.
 
-## 🧩 Características Principales
+## ⚙️ Tecnologías utilizadas
 
-- 🔐 Autenticación JWT con roles (Administrador / Usuario)
-- 👤 Gestión completa de usuarios y socios
-- 📆 Reasignación de número de socio según antigüedad
-- 🌍 Soporte multilenguaje (español e inglés)
-- 🌗 Soporte para modo claro/oscuro
-- 🖼️ Carga de imágenes de perfil
-- 🧭 Interfaz intuitiva construida con Jetpack Compose y Kotlin Multiplatform
-- 🔗 Comunicación HTTP con seguridad (APIKEY + JWT)
+- Kotlin Multiplatform
+- Jetpack Compose (Android & Web)
+- Ktor Client
+- Ktorfit
+- Kotlin Serialization
+- Multiplatform Settings
+- Kotlinx Datetime
+- Coil (carga de imágenes)
+- FileKit (gestión de archivos)
+- UI BackHandler
 
-## 🛠️ Tecnologías Utilizadas
+## ✨ Características
 
-### Backend (API RESTful)
+- Iniciar sesión como Usuario o Administrador.
+- Ver/editar perfil personal (Usuario).
+- Gestionar socios y usuarios (Administrador).
+- Reasignar numeración de socios automáticamente.
+- Cambiar idioma (Español/Inglés).
+- Modo claro/oscuro/sistema.
+- Sesiones con expiración y validación por token.
+- Notificaciones (snackbars) dinámicas.
+- Carga de imágenes de perfil (avatar).
 
-- **Node.js + Express**
-- **MySQL2 + Sequelize (ORM)**
-- **JWT (JsonWebToken)**
-- **Multer** (gestión de imágenes)
-- **AJV** (validación JSON)
-- **I18N** (internacionalización)
-- **Dotenv** (variables de entorno)
-- **Cors**
+## 📲 Instalación y ejecución
 
-### Cliente (Web y Android)
+### Android
 
-- **Kotlin Multiplatform (KMP)**
-- **Jetpack Compose**
-- **Ktor Client / Ktorfit**
-- **Kotlinx Serialization / Kotlinx Datetime**
-- **Multiplatform Settings** (persistencia local)
-- **Coil** (carga de imágenes)
-- **FileKit** (gestión de archivos)
+1. Abre el proyecto en Android Studio.
+2. Elige un emulador o conecta un dispositivo.
+3. Ejecuta `Run` ▶️.
 
-## 🔐 Roles y Permisos
+### Web
 
-| Funcionalidad                            | Usuario | Administrador |
-|-----------------------------------------|:-------:|:-------------:|
-| Iniciar sesión                          | ✅      | ✅            |
-| Ver información personal                | ✅      | ✅            |
-| Alta / Modificación / Eliminación       | ❌      | ✅            |
-| Ver y filtrar socios                    | ❌      | ✅            |
-| Reasignar numeración por antigüedad     | ❌      | ✅            |
-| Cambiar idioma o tema visual            | ✅      | ✅            |
+1. Usa la configuración WASMJs incluida en el proyecto.
+2. Ejecuta:
+   ```bash
+   ./gradlew wasmJsBrowserRun
+   ```
 
-## 🧪 Requisitos del Sistema
+> Asegúrate de tener la API REST ejecutándose localmente o en el servidor.
 
-- **Servidor:**
-  - Node.js v18+
-  - MySQL
-  - Entorno de desarrollo: Visual Studio Code
-- **Cliente Android/Web:**
-  - Android Studio (para Android)
-  - Navegador moderno (para Web)
-  - Kotlin Multiplatform
+## 🧑‍💼 Roles
 
-## 🧮 Modelo de Datos
+- **Administrador:** Puede crear, modificar, eliminar socios y usuarios.
+- **Usuario:** Solo puede ver su información personal.
 
-### Tabla `usuario`
-- `id`: INT, PK, autoincrement
-- `avatar`: STRING (opcional)
-- `nombre`: STRING
-- `apellidos`: STRING (opcional)
-- `telefono`: STRING (opcional)
-- `email`: STRING, único
-- `contraseña`: STRING
-- `rol`: ENUM (`usuario`, `administrador`)
+## 🧾 Licencia
 
-### Tabla `socio`
-- `id`: INT, PK, autoincrement
-- `numero_socio`: INT
-- `fecha_antigüedad`: STRING
-- `categoría`: ENUM (`Infantil`, `Juvenil`, `Adulto`, `Senior`)
-- `abonado`: BOOLEAN
-- `usuario_id`: FK → `usuario.id`
+Este proyecto ha sido desarrollado como parte del **Proyecto Final de Grado Superior de Desarrollo de Aplicaciones Multiplataforma (FP DAM)** – IES Torre del Rey (Curso 24-25).
 
-## 🧑‍💻 Autor
+## 📂 Repositorio API Backend
 
-**Desarrollado por: Álvaro Moyano Vila**  
-Proyecto final individual realizado como cierre del ciclo formativo de Grado Superio DAM.
+👉 [apirest-sociosapp](https://github.com/alvaromyv/apirest-sociosapp)
